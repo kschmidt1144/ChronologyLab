@@ -1,0 +1,46 @@
+{
+  "E1": {
+    "monotone_decay_verified": true,
+    "floors": {
+      "1.0": 0.2689414213699951,
+      "3.0": 0.04742587317756678,
+      "6.0": 0.0024726231566347743
+    },
+    "finding": "closure probability decays monotonically to the Boltzmann weight of the loop state; short hops cheap, loops beyond t_relax pay exp(-dS/kB) (T1)"
+  },
+  "E2": {
+    "T2a_undriven": {
+      "loops": 2187,
+      "P_closure": 0.09003412381534501,
+      "max_abs_entropy_production": 0.0
+    },
+    "T2b_driven": {
+      "loops": 6561,
+      "P_closure": 0.33340457559200126,
+      "max_DFT_deviation": 3.108624468950438e-14,
+      "integral_FT_value": 0.9999999999999374,
+      "mean_s_given_closure": 4.192221232146287
+    },
+    "finding": "T2a sharpening: undriven consistent loops have s = 0 EXACTLY (telescoping) \u2014 dissipation around a closed trajectory is identically zero, C2a as a theorem in this class; T2b: with driving, the conditional detailed FT holds bin-by-bin, <e^-s>_C = 1, <s>_C >= 0"
+  },
+  "E3": {
+    "R1": 0.3053386848051606,
+    "delta_per_component_kB": 1.1863336764752506,
+    "log10_P_N1000": -515.2181693891988,
+    "log10_P_one_gram": -2.5832289885698765e+22,
+    "finding": "independent components multiply: R_N = R_1^N \u2014 the macroscopic-traveler suppression, now derived rather than assumed (T4)"
+  },
+  "E4": {
+    "deutsch_final_successive_distance": {
+      "0.3": 3.656592041698371e-10,
+      "0.8": 4.2376838768098465e-64,
+      "1.5": 0.0
+    },
+    "record_floors_boltzmann": {
+      "1.0": 0.2689414213699951,
+      "3.0": 0.04742587317756678,
+      "6.0": 0.0024726231566347743
+    },
+    "finding": "Deutsch (density-matrix) consistency converges at every coupling \u2014 no thermodynamic gate; record-level closure decays to the Boltzmann floor: the price attaches to records, not to the loop (T5)"
+  }
+}

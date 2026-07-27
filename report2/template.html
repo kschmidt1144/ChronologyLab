@@ -1,0 +1,384 @@
+<title>Chronology Lab — Report II: The thermodynamic price of a consistent time loop</title>
+<style>
+  :root {
+    --bg: #f7f8fa; --ink: #15171c; --ink2: #555b66; --ink3: #8a8f99;
+    --hair: #e2e4ea; --accent: #2a78d6; --accent-soft: rgba(42, 120, 214, .10);
+    --surface: #fcfcfb; --panel: #eef0f4;
+    --good: #0ca30c; --crit: #d03b3b; --warn: #fab219; --serious: #ec835a;
+    --sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+    --serif: Charter, "Iowan Old Style", Georgia, serif;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #101216; --ink: #e9ebef; --ink2: #a6adba; --ink3: #767d8a;
+      --hair: #262a32; --accent: #3987e5; --accent-soft: rgba(57, 135, 229, .14);
+      --surface: #1a1a19; --panel: #171a20;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #101216; --ink: #e9ebef; --ink2: #a6adba; --ink3: #767d8a;
+    --hair: #262a32; --accent: #3987e5; --accent-soft: rgba(57, 135, 229, .14);
+    --surface: #1a1a19; --panel: #171a20;
+  }
+  html { background: var(--bg); }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.68 var(--serif); -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 20px 90px; }
+  a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  h1, h2, h3 { font-family: var(--sans); color: var(--ink); text-wrap: balance; line-height: 1.2; }
+  h1 { font-size: 32px; font-weight: 700; letter-spacing: -.015em; margin: 10px 0 12px; }
+  h2 { font-size: 21px; font-weight: 650; margin: 52px 0 12px; }
+  h3 { font-size: 16px; font-weight: 650; margin: 30px 0 8px; }
+  p { margin: 0 0 14px; }
+  .eyebrow { font: 600 11.5px/1 var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--ink3); margin: 0 0 6px; }
+  .dek { font-size: 19px; color: var(--ink2); margin: 0 0 18px; }
+  .meta { font: 500 12.5px/1.7 var(--sans); color: var(--ink3); }
+  .meta b { color: var(--ink2); font-weight: 600; }
+  .fringe {
+    height: 9px; margin: 22px 0 34px; border-radius: 2px;
+    background: repeating-linear-gradient(90deg, var(--accent) 0 2px, transparent 2px 11px);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 32%, #000 68%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 32%, #000 68%, transparent);
+    opacity: .55;
+  }
+  .abstract { background: var(--accent-soft); border: 1px solid var(--hair); border-left: 3px solid var(--accent); border-radius: 10px; padding: 18px 20px; margin: 26px 0 8px; }
+  .abstract p { margin: 0 0 10px; } .abstract p:last-child { margin: 0; }
+  .thm { background: var(--panel); border: 1px solid var(--hair); border-radius: 10px; padding: 14px 18px; margin: 16px 0; }
+  .thm b.tag { font-family: var(--sans); color: var(--accent); }
+  .proof { font-size: 15.5px; color: var(--ink2); border-left: 2px solid var(--hair); padding: 2px 0 2px 14px; margin: 0 0 14px; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; vertical-align: middle; font: 650 10.5px/1 var(--mono); letter-spacing: .05em; text-transform: uppercase; padding: 4px 9px; border-radius: 999px; border: 1px solid var(--hair); color: var(--ink2); background: var(--bg); white-space: nowrap; }
+  .chip::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--ink3); }
+  .chip.v-holds::before { background: var(--good); }
+  .chip.v-note::before { background: var(--accent); }
+  blockquote.q { margin: 14px 0; padding: 12px 16px; background: var(--panel); border-radius: 8px; font-size: 15.5px; color: var(--ink2); }
+  blockquote.q cite { display: block; margin-top: 8px; font: 500 12.5px/1.5 var(--sans); font-style: normal; color: var(--ink3); }
+  .figcard { background: var(--surface); border: 1px solid var(--hair); border-radius: 10px; padding: 14px 12px 8px; margin: 18px 0; }
+  .fig { width: 100%; height: auto; display: block; }
+  .fig-dark { display: none; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .fig-light { display: none; }
+    :root:not([data-theme="light"]) .fig-dark { display: block; }
+  }
+  :root[data-theme="dark"] .fig-light { display: none; }
+  :root[data-theme="dark"] .fig-dark { display: block; }
+  :root[data-theme="light"] .fig-light { display: block; }
+  :root[data-theme="light"] .fig-dark { display: none; }
+  figcaption { font: 500 13px/1.6 var(--sans); color: var(--ink3); padding: 8px 4px 4px; }
+  figcaption b { color: var(--ink2); }
+  figure { margin: 0; }
+  .scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font: 14px/1.55 var(--sans); font-variant-numeric: tabular-nums; }
+  th { text-align: left; font-weight: 650; color: var(--ink2); font-size: 12.5px; text-transform: uppercase; letter-spacing: .05em; }
+  th, td { padding: 8px 12px 8px 0; border-bottom: 1px solid var(--hair); vertical-align: top; }
+  ul, ol { margin: 0 0 14px; padding-left: 24px; }
+  li { margin-bottom: 6px; }
+  .refs li { font-size: 15px; color: var(--ink2); margin-bottom: 9px; }
+  .ok { color: var(--good); font-weight: 650; }
+  code, .m { font-family: var(--mono); font-size: .88em; background: var(--panel); padding: 1px 5px; border-radius: 4px; }
+  .colophon { border-top: 1px solid var(--hair); margin-top: 60px; padding-top: 18px; font: 400 13px/1.7 var(--sans); color: var(--ink3); }
+</style>
+
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">Chronology Lab · Report II · P1 program · 2026-07-26</p>
+    <h1>The thermodynamic price of a consistent time loop</h1>
+    <p class="dek">What does Novikov self-consistency cost? In solvable stochastic-thermodynamics
+    models: exactly the Boltzmann weight of what the loop must preserve — and the bill attaches to
+    <i>records</i>, not to time travel itself.</p>
+    <p class="meta"><b>Series:</b> follow-up to
+    <a href="https://kykli.dev/chronologylab/">Report I</a> (the full claim ledger) · quantifies
+    thesis T3 · pre-registered targets in <code>docs/P1_TARGET.md</code>, committed before results
+    (commit <code>f039282</code>) · code: <code>p1/run_all.py</code> in the
+    <a href="https://github.com/kschmidt1144/ChronologyLab">public repo</a>.</p>
+    <div class="fringe" role="presentation"></div>
+  </header>
+
+  <div class="abstract">
+    <p><b>Abstract.</b> Report I found that self-consistent time-loop histories are generic rather
+    than rare — yet Kevin's original "almost all time travel is impossible" retained a defensible
+    core (T3): macroscopic pastward intervention should be <i>entropically suppressed</i>. Here we
+    make that quantitative in explicit models. For a dissipative system threading a
+    trajectory-level (Novikov) time loop, with Markovian detailed-balance dynamics: <b>(1)</b> the
+    probability of consistent closure decays monotonically with loop duration to the
+    Boltzmann–Einstein weight of the loop state — e<sup>−ΔF/k<sub>B</sub>T</sup>, i.e.
+    e<sup>−ΔS/k<sub>B</sub></sup> for an entropy-deficit state: short hops are cheap, loops longer
+    than the relaxation time pay the full price of the loop state's persistence. <b>(2)</b> Around
+    an <i>undriven</i> consistent loop, entropy production is not merely suppressed — it is
+    <b>exactly zero</b>, path by path (2,187 of 2,187 enumerated loops); with external driving, a
+    detailed fluctuation theorem holds <i>inside</i> the consistent ensemble, so loops obey the
+    second law statistically and cannot be free-lunch machines. <b>(3)</b> A loop persistently
+    hosting free-energy excess ΔF closes with probability e<sup>−ΔF/k<sub>B</sub>T</sup> — no
+    delivery of free energy to the past except at full Boltzmann tax. <b>(4)</b> The price is
+    extensive: independent components multiply, giving ~10<sup>−2.6×10²²</sup> for one
+    conspiratorial gram — Report I's scale estimate, now derived. <b>(5)</b> Quantum contrast:
+    Deutsch density-matrix consistency is satisfiable at every tested coupling with <i>no</i>
+    thermodynamic gate, while pointer-level "record" consistency reproduces the classical
+    exponential suppression — <b>the thermodynamic price of time travel attaches to memory</b>.
+    Together these give "almost all macroscopic time travel doesn't happen" a theorem-grade
+    meaning inside a declared model class — while confirming it can never be strengthened to
+    "impossible."</p>
+  </div>
+
+  <h2 id="s1">1 · Motivation and placement</h2>
+  <p>This report executes program P1 from the Chronology Lab ledger. Report I's audit left the
+  original claim false as stated but flagged its best surviving descendant, thesis
+  <b>T3 (entropic suppression)</b>, as unquantified — held at evidence level E3 (controlled
+  heuristic). The present work upgrades T3 to theorems-with-exact-checks (E1/E2) <i>within a
+  declared model class</i>, and locates precisely where the cost sits. Placement matters: this is
+  thermodynamics <b>of the traveler on</b> a loop, taking the loop as a background boundary
+  condition. It says nothing about the dynamics <b>of</b> the loop's spacetime — no metric, no
+  backreaction — and is therefore complementary to, not a contribution to, the chronology
+  protection question (ledger leaf C4b), which remains open.</p>
+
+  <h2 id="s2">2 · Prior art (adversarial novelty scan)</h2>
+  <p>Per the lab's method, three research agents were tasked to <i>refute the novelty</i> of the
+  planned results before we invested in them. What the scan found:</p>
+  <p><b>Physics sweep.</b> The closest prior art is <b>Devin (arXiv:1302.3298, 2013)</b> — a
+  qubit time machine with channel error rate k, a work-extraction bound W ≲ −ln k, and an
+  assembly scaling k<sub>eff</sub> = k<sup>N</sup>: recognizable germs of our T4, with
+  "exponentially difficult" rhetoric for time tourists. It contains no stochastic dynamics, no
+  fluctuation theorem, no closure-equals-return-probability statement, and dismisses the Deutsch
+  comparison; thirteen years on it has only self-citations. <b>Rovelli (arXiv:1912.04702,
+  2019)</b> states our T1/T2a punchline at essay level — dS/dτ must vanish around a loop, no
+  memory survives, pastward travel is "extremely improbable" — with no formula, model, or
+  exponent (it also anticipated Report I's memory corollary, for which we have issued a credit
+  adjustment). <b>Gavassino (CQG 2025)</b> reaches exact consistency by quantum kinematics
+  (energy-level discretization forces every system on a CTC back to its initial state; memories
+  erased) — consistency <i>enforced</i>, never <i>priced</i>. <b>Lossev &amp; Novikov (CQG 1992)</b>,
+  abstract verified verbatim, identified the thermodynamic maintenance requirement of
+  closed-worldline objects ("Jinn"): "These systems are possible only if they can, by interacting
+  with external objects, gain energy to regenerate their internal structure" — qualitative; our
+  T1/C3 supply that requirement's price. The quantum-information genre <i>exploits</i> CTCs
+  against the second law (Bartkiewicz et al., PRA 2019: circuits "which lead to decrease of
+  entropy"; Lloyd et al.'s P-CTCs), assuming consistency for free; Cassidy &amp; Hawking (1998)
+  showed entropy suppresses <i>forming</i> a CTC region — a different object; Mikheeva &amp;
+  Novikov (1993) showed dissipative billiards still admit consistent solutions — existence,
+  never probability. Structural negatives: an INSPIRE query for "closed timelike" AND "second
+  law" returns zero records; sweeps for fluctuation theorem × CTC, Jarzynski/Crooks × CTC,
+  Landauer × CTC found nothing combining stochastic thermodynamics with Novikov consistency.</p>
+  <p><b>Philosophy sweep.</b> The improbability argument is Horwich's (1987, restated 1995), from
+  the bilking lineage of Black (1956) and Dummett (1964), debated by Smith (1997), Dowe (2003),
+  Sider (2002), Ismael (2003) — every side arguing with informal probability only; Sider's
+  restatement concedes "a rash of coincidences would apparently not violate any law." The
+  literature's own high-water mark documents the gap this report fills:</p>
+  <blockquote class="q">"If the relevant probabilities should be interpreted as objective, then
+    we should be in the position to define an adequate event space with a principled,
+    well-defined measure… [the construction] is certainly neither in Horwich (1987) nor in
+    Arntzenius (2006)… regardless of whether we interpret the probabilities involved objectively
+    or subjectively, we are at a loss."
+    <cite>— Smeenk &amp; Wüthrich, "Time Travel and Time Machines," Oxford Handbook of
+    Philosophy of Time (2011), §2.2 — which also records (fn. 11, crediting Callender) the
+    typicality-measure strategy that the present report executes in a tractable class ·
+    <a href="https://publish.uwo.ca/~csmeenk2/files/TTTMWeb.pdf">full text</a> · verified</cite></blockquote>
+  <p><b>Scan verdict: not preempted at theorem level — and not virgin ground.</b> The planned
+  results sit at the unoccupied intersection of three occupied neighborhoods, so the honest
+  framing of this report is: <i>the missing quantitative layer beneath Horwich (1987),
+  Lossev–Novikov (1992), Rovelli (2019), Devin (2013), and Gavassino (2025)</i>. Disclosed
+  residual risks: Horwich (1975), Wasserman (2018, ch. 4 §3), and Effingham (2020) were checked
+  via reviews and secondary restatements only; the Novikov-school deep-archive sweep's
+  highest-risk item (the Jinn paper) was verified directly, with the full sweep appended to
+  <code>docs/P1_NOVELTY.md</code> on completion. Full dossier with per-item preemption judgments:
+  <code>docs/P1_NOVELTY.md</code>.</p>
+
+  <h2 id="s3">3 · Setup</h2>
+  <p><b>Classical model class.</b> A finite, irreducible Markov chain (discrete or continuous
+  time) with transition rates w(x→y) &gt; 0 obeying local detailed balance with a single heat
+  bath at temperature T; stationary distribution π is Gibbs. The <b>loop</b> is a trajectory-level
+  Novikov consistency condition: an ideal junction returns the loop variable's microstate from
+  coordinate time τ to time 0, so a history is consistent iff x(0) = x(τ) = x
+  (event C<sub>x</sub>). The medium entropy of a path γ is
+  s(γ) = k<sub>B</sub> Σ ln[w(x<sub>i</sub>→x<sub>i+1</sub>)/w(x<sub>i+1</sub>→x<sub>i</sub>)]
+  (heat delivered to the bath over T).</p>
+  <p><b>Quantum comparison.</b> The Deutsch condition ρ = Φ(ρ) ("state-level consistency") versus
+  <b>record consistency</b> — the pointer-basis value must return around the loop.</p>
+  <p><b>Assumptions, fixed in advance</b> (ledger entries A-P1-1…3): the junction adds no
+  dissipation of its own; probabilities are statements in the ordinary path measure of the
+  dynamics (the same typicality reading as any statistical-mechanics claim about our one world);
+  bath undriven except where stated. Everything below is conditional on this class — the
+  standard honesty rail of this lab.</p>
+
+  <h2 id="s4">4 · Results</h2>
+
+  <h3>Theorem 1 — the closure cost <span class="chip v-holds">held · E1 + E2</span></h3>
+  <div class="thm"><b class="tag">T1.</b> For reversible chains the closure probability
+  R<sub>τ</sub>(x) = P(x(τ)=x | x(0)=x) is monotonically decreasing in τ, bounded below by π(x),
+  and converges to π(x) on the relaxation timescale. For a macrostate M,
+  R<sub>τ</sub>(M) → π(M) = e<sup>−(F<sub>M</sub>−F<sub>eq</sub>)/k<sub>B</sub>T</sup> — for
+  states distinguished by entropy alone, e<sup>−(S<sub>eq</sub>−S<sub>M</sub>)/k<sub>B</sub></sup>
+  (the Einstein fluctuation weight).</div>
+  <p class="proof"><b>Why.</b> A reversible generator is self-adjoint in the π-weighted inner
+  product, so P<sub>τ</sub>(x,x) = π(x) + Σ<sub>k≥2</sub> e<sup>−λ<sub>k</sub>τ</sup>
+  φ<sub>k</sub>(x)² π(x) with all λ<sub>k</sub> &gt; 0: a sum of decaying exponentials on top of
+  the stationary weight — hence monotone, hence ≥ π(x), hence → π(x). The macrostate limit is the
+  stationary measure of M, which at temperature T is its Boltzmann weight. ∎</p>
+  <p><b>Physical reading:</b> a jump five minutes back, closed quickly, costs almost nothing —
+  R ≈ 1. A loop that outlives the system's relaxation time pays the <i>full Boltzmann price of
+  keeping the loop state in existence</i>. The often-quoted intuition "the universe forbids time
+  travel" becomes, in-model, the tamer and sharper statement: <i>the universe charges Boltzmann
+  rates for it</i>.</p>
+  <figure class="figcard">{{FIG:p1_e1_closure}}
+    <figcaption><b>E1 — closure cost in the two-state model (exact).</b> Closure probability vs
+    loop duration for loop states of entropy deficit ΔS = 1, 3, 6 k<sub>B</sub>: monotone decay
+    (verified numerically along every curve) to the Boltzmann floors e<sup>−ΔS/k_B</sup> =
+    0.269, 0.047, 0.0025. Short hops cheap; long loops pay in full.</figcaption></figure>
+
+  <h3>Theorem 2 — the second law inside the loop <span class="chip v-holds">held · E1 + E2, sharpened</span></h3>
+  <div class="thm"><b class="tag">T2a (undriven — sharper than pre-registered).</b> With a single
+  bath and no driving, <i>every</i> consistent loop has exactly zero net medium entropy
+  production: s(γ) = 0 identically, not merely on average.<br>
+  <b class="tag">T2b (driven).</b> With external driving, within the consistent ensemble the
+  detailed fluctuation theorem P(s | C)/P(−s | C) = e<sup>s/k_B</sup> holds; consequently
+  ⟨e<sup>−s/k_B</sup>⟩<sub>C</sub> = 1, P(s ≤ −σ | C) ≤ e<sup>−σ/k_B</sup>, and
+  ⟨s⟩<sub>C</sub> ≥ 0.</div>
+  <p class="proof"><b>Why.</b> (a) Undriven, each jump's log-ratio is −(E<sub>y</sub>−E<sub>x</sub>)/T,
+  so the sum telescopes to (E<sub>x(0)</sub>−E<sub>x(τ)</sub>)/T — zero on any periodic path.
+  (b) Time-reversal is a bijection of the periodic ensemble onto itself (same pinned endpoint),
+  and the path-probability ratio of a trajectory to its reverse is e<sup>s/k_B</sup>; the
+  conditioning weights cancel, giving the conditional DFT; the integral form and the tail bound
+  follow by summation, and ⟨s⟩<sub>C</sub> ≥ 0 by Jensen. ∎</p>
+  <p><b>Physical reading:</b> T2a is Report I's leaf C2a — "closed worldlines must be perfectly
+  reversible" — surviving contact with an exact model <i>as an identity</i>, not an
+  approximation: an undriven consistent loop exchanges zero net heat, so any dissipative episode
+  inside the loop must be exactly un-dissipated elsewhere along it. The improbability of that
+  un-dissipation is not an extra charge — it <i>is</i> Theorem 1's closure cost; the books close.
+  T2b says driving doesn't open a loophole: consistent loops are statistically ordinary — an
+  entropy-consuming loop is exponentially rare in exactly the way an entropy-consuming ordinary
+  process is. Time loops are not perpetual-motion machines.</p>
+  <figure class="figcard">{{FIG:p1_e2_dft}}
+    <figcaption><b>E2 — exact enumeration of every consistent loop.</b> Driven 3-state ring, all
+    6,561 length-9 periodic paths: the conditional fluctuation ratio matches the theorem line
+    bin-by-bin (max deviation 3×10⁻¹⁴; ⟨e<sup>−s</sup>⟩<sub>C</sub> = 1.000000;
+    ⟨s⟩<sub>C</sub> = +4.19 k<sub>B</sub>). Undriven chain, all 2,187 periodic paths: every
+    single one has s = 0 exactly.</figcaption></figure>
+
+  <h3>Corollary 3 — no free energy to the past <span class="chip v-holds">held · E1</span></h3>
+  <div class="thm"><b class="tag">C3.</b> A loop whose cargo persistently carries free-energy
+  excess ΔF above the bath's equilibrium closes with probability → e<sup>−ΔF/k<sub>B</sub>T</sup>.
+  A time loop can host a charged battery — only at the full Boltzmann tax on its charge.</div>
+  <p class="proof"><b>Why.</b> Immediate from Theorem 1: the stationary weight of a state with
+  free-energy excess ΔF<sub>x</sub> = F<sub>x</sub> − F<sub>eq</sub> is exactly
+  e<sup>−ΔF<sub>x</sub>/k<sub>B</sub>T</sup>. ∎ The "bilking" scenario — using the loop to gift
+  your past self a resource — is thereby priced, not paradoxed.</p>
+
+  <h3>Theorem 4 — the price is extensive <span class="chip v-holds">held · E1 + E2</span></h3>
+  <div class="thm"><b class="tag">T4.</b> Independent loop-threading components multiply:
+  R<sub>N</sub> = (R₁)<sup>N</sup> = e<sup>−N·δ/k_B</sup>. The suppression of a macroscopic
+  consistent traveler is exponential in its size.</div>
+  <figure class="figcard">{{FIG:p1_e3_extensivity}}
+    <figcaption><b>E3 — extensivity.</b> At loop duration 3 relaxation times with a modest
+    ΔS = 1 k<sub>B</sub> per component, the slope is 1.19 k<sub>B</sub> per component:
+    N = 10³ gives P ≈ 10⁻⁵¹⁵; one gram of matter (5×10²² units) gives
+    P ≈ 10<sup>−2.6×10²²</sup> — Report I's TM5 scale estimate, now a derived instance with
+    stated assumptions.</figcaption></figure>
+
+  <h3>Result 5 — where the price attaches <span class="chip v-holds">held · E2 (numeric)</span></h3>
+  <div class="thm"><b class="tag">R5.</b> Deutsch (density-matrix) consistency carries no
+  thermodynamic gate: the consistency map has a fixed point at every coupling tested, reached
+  from arbitrary initial states. Demanding instead that a <i>record</i> — a pointer-basis
+  value — return around the loop reproduces the classical exponential suppression of Theorem 1.
+  <b>The thermodynamic price of a time loop attaches to records, not to the loop.</b></div>
+  <p><b>Physical reading:</b> this is the quantitative form of Report I's corollary that "nothing
+  can remember completing a closed loop." A quantum state may thread a loop freely — consistency
+  is a fixed-point condition that costs nothing (and, in our model, the selected fixed point is
+  the thermal state: the loop <i>thermalizes</i>). What is exponentially taxed is
+  classicality around the loop: any pointer-like, copyable, rememberable configuration pays
+  Boltzmann. A time machine for quantum information is thermodynamically cheap; a time machine
+  for <i>history</i> — records, memories, travelers who know they traveled — is the thing nature
+  prices out.</p>
+  <figure class="figcard">{{FIG:p1_e4_quantum}}
+    <figcaption><b>E4 — the quantum contrast.</b> Left: Deutsch iteration converges (successive
+    trace distance → 0) at every coupling λ tested — a consistent ρ always exists; no
+    suppression. Right: record-level closure probability under the same loop dynamics decays to
+    the Boltzmann floor of the record's state (floors at e<sup>−ΔS/k_B</sup>, dashed). Same loop,
+    two consistency notions: state-level free, record-level taxed.</figcaption></figure>
+
+  <h2 id="s5">5 · What this does to the ledger</h2>
+  <div class="scroll"><table>
+    <tr><th>Ledger item</th><th>Before</th><th>After Report II</th></tr>
+    <tr><td>C2a (dissipation forbids closed worldlines)</td><td>holds as suppression · E3 (heuristic)</td><td>holds — undriven case now an <b>identity</b> (s ≡ 0 on every loop, T2a); suppression carried entirely by closure cost (T1) · E1/E2 in-model</td></tr>
+    <tr><td>C5c (macroscopic intervention entropically suppressed)</td><td>holds in spirit · E3, scale-only (TM5)</td><td><b>quantified</b>: closure = Boltzmann weight, extensive in N (T1+T4); one-gram number derived · E1/E2 in-model</td></tr>
+    <tr><td>T3 (refined thesis)</td><td>defensible cousin of the original claim</td><td>theorem-grade <i>within the declared class</i>; "almost all" = all but e<sup>−ΔF/k_BT</sup> of the path measure; provably never "impossible" (floors are positive)</td></tr>
+    <tr><td>Original claim C0</td><td>false as stated</td><td>unchanged — but its "almost all" clause now has its best-available precise form, and its "exactly equal energy" clause maps to the ΔF = 0 floor of Corollary 3</td></tr>
+  </table></div>
+
+  <h2 id="s6">6 · Scope, objections, and what would break this</h2>
+  <ul>
+    <li><b>Model class.</b> Everything is proven for Markovian local-detailed-balance dynamics
+    with an ideal loop junction. A dissipative junction adds cost (strengthening the
+    conclusion); non-Markovian baths and strongly interacting components (beyond T4's
+    independence) are stated extensions, not covered claims.</li>
+    <li><b>The block-universe objection.</b> "There is no ensemble of universes for these
+    probabilities to live in." Our probabilities are typicality statements in the ordinary path
+    measure — precisely the status of every statistical-mechanics claim about the single actual
+    world. If that reading is rejected, the second law itself is rejected with it.</li>
+    <li><b>Reading of consistency.</b> Trajectory-level Novikov is the <i>strongest</i> classical
+    reading; Result 5 shows the conclusion inverts under Deutsch's weakest reading — that
+    contrast is a finding, not a loophole.</li>
+    <li><b>No spacetime dynamics.</b> Nothing here bears on whether loops can form (chronology
+    protection, C4b). We price the ride, not the road.</li>
+    <li><b>Ingredients are standard.</b> Spectral return probabilities, path-ratio fluctuation
+    identities, and Jensen bounds are textbook stochastic thermodynamics. The contribution — per
+    the novelty scan in §2 — is the assembly: pricing Novikov consistency with them, the
+    conditional-ensemble framing, the exact T2a identity, and the state-vs-record split.</li>
+    <li><b>Status.</b> Unrefereed, single-team work produced with an AI research partner; the
+    novelty claim is exactly as good as the §2 scan. The natural next step is external review —
+    a condensed version an expert can check in an afternoon.</li>
+  </ul>
+
+  <h2 id="s7">7 · Pre-registration accounting</h2>
+  <p>Targets T1–T5 with falsifiers were committed before any derivation was checked or model run
+  (repo commit <code>f039282</code>; results commit follows it). Outcome: all five targets held;
+  none of the pre-registered falsifiers fired. One <b>sharpening</b> is logged: pre-registered T2
+  turned out to be trivially satisfied in the undriven class — because entropy production
+  telescopes to <i>exactly zero</i> on every periodic path (now T2a, a stronger statement than
+  registered), with the contentful fluctuation theorem living in the driven case (T2b). Logged in
+  the ledger CHANGELOG the same day.</p>
+
+  <h2 id="s8">8 · Methods</h2>
+  <p>E1: two-state chain, closed-form R<sub>τ</sub> (analytic), monotonicity checked pointwise.
+  E2: exact enumeration of all periodic paths — undriven 3-state Metropolis chain (2,187 loops)
+  and driven 3-ring at affinity 1.5 k<sub>B</sub>T per hop (6,561 loops); no sampling, no fits.
+  E3: closed-form product. E4: 2-qubit partial-swap thermalizing map; Deutsch iteration from
+  random states, 300 steps; record channel = the same map dephased in the pointer basis.
+  All code: <code>p1/run_all.py</code> (numpy/matplotlib via uv); outputs committed in
+  <code>p1/out/</code>; figures render in light and dark from a CVD-validated palette.</p>
+
+  <h2 id="refs">References</h2>
+  <ol class="refs">
+    <li><i>Methods (standard references, textbook material):</i> Jarzynski, PRL 78, 2690 (1997) ·
+      Crooks, PRE 60, 2721 (1999) · Seifert, "Stochastic thermodynamics, fluctuation theorems and
+      molecular machines," Rep. Prog. Phys. 75, 126001 (2012) · Levin &amp; Peres, <i>Markov
+      Chains and Mixing Times</i> (AMS, 2nd ed. 2017).</li>
+    <li>Black, "Why Cannot an Effect Precede its Cause?", Analysis 16, 49 (1956); Dummett,
+      "Bringing About the Past" (1964). <span class="ok">verified via SEP</span></li>
+    <li>Lewis, "The Paradoxes of Time Travel," Am. Phil. Quarterly 13, 145 (1976). <span class="ok">verified (Report I)</span></li>
+    <li>Horwich, <i>Asymmetries in Time</i> (MIT Press, 1987), ch. 7; "Closed Causal Chains," in
+      Savitt (ed.), <i>Time's Arrows Today</i> (CUP, 1995). <span class="ok">verified via SEP/Sider restatements</span>; 1975 JPhil article checked via secondary only</li>
+    <li>Deutsch, "Quantum mechanics near closed timelike lines," PRD 44, 3197 (1991). <span class="ok">verified (Report I)</span></li>
+    <li>Lossev &amp; Novikov, "The Jinn of the time machine: nontrivial self-consistent solutions," Class. Quantum Grav. 9, 2309 (1992). <span class="ok">abstract verified verbatim</span> (<a href="https://iopscience.iop.org/article/10.1088/0264-9381/9/10/014/meta">IOP</a>)</li>
+    <li>Mikheeva &amp; Novikov, "Inelastic billiard ball in a spacetime with a time machine," PRD 47, 1432 (1993). <span class="ok">verified</span></li>
+    <li>Carlini, Frolov, Mensky, Novikov &amp; Soleng, IJMPD 4, 557 (1995), <a href="https://arxiv.org/abs/gr-qc/9506087">gr-qc/9506087</a>. <span class="ok">verified</span></li>
+    <li>Smith, "Bananas Enough for Time Travel?", BJPS 48, 363 (1997); Dowe, "The Coincidences of Time Travel," Phil. Sci. 70, 574 (2003); Sider, "Time Travel, Coincidences and Counterfactuals," Phil. Studies 110, 115 (2002) (<a href="https://tedsider.org/papers/time_travel_and_coincidence.pdf">full text</a>); Vihvelin (1996); Ismael (2003). <span class="ok">verified</span></li>
+    <li>Cassidy &amp; Hawking, "Models for chronology selection," PRD 57, 2372 (1998), <a href="https://arxiv.org/abs/hep-th/9709066">hep-th/9709066</a>. <span class="ok">verified</span></li>
+    <li>Schulman, "Resolution of causal paradoxes arising from opposing thermodynamic arrows of time," <a href="https://arxiv.org/abs/cond-mat/0102014">cond-mat/0102014</a> (2001). <span class="ok">verified</span> — two-time boundaries, no loops</li>
+    <li>Arntzenius, "Time Travel: Double Your Fun," Phil. Compass 1, 599 (2006) (<a href="https://personal.lse.ac.uk/ROBERT49/teaching/ph103/2013-2014/pdf/Arntzenius-TimeTravel.pdf">full text</a>). <span class="ok">verified</span></li>
+    <li>Smeenk &amp; Wüthrich, "Time Travel and Time Machines," in Callender (ed.), <i>Oxford Handbook of Philosophy of Time</i> (OUP, 2011) (<a href="https://publish.uwo.ca/~csmeenk2/files/TTTMWeb.pdf">full text</a>). <span class="ok">verified</span> — the documented gap</li>
+    <li>Lloyd et al., PRL 106, 040403 (2011), <a href="https://arxiv.org/abs/1005.2219">arXiv:1005.2219</a>. <span class="ok">verified (Report I)</span></li>
+    <li>Devin, "Thermodynamics of Time Machines," <a href="https://arxiv.org/abs/1302.3298">arXiv:1302.3298</a> (2013, unpublished). <span class="ok">full text read</span> — closest prior art; superseded as described in §2</li>
+    <li>Wasserman, <i>Paradoxes of Time Travel</i> (OUP, 2018), ch. 4; Effingham, <i>Time Travel: Probability and Impossibility</i> (OUP, 2020). checked via reviews/TOC only — disclosed residual risk</li>
+    <li>Bartkiewicz, Grudka, Horodecki, Łodyga &amp; Wychowaniec, "Closed timelike curves and the second law of thermodynamics," PRA 99, 022304 (2019), <a href="https://arxiv.org/abs/1711.08334">arXiv:1711.08334</a>. <span class="ok">verified</span></li>
+    <li>Rovelli, "Can we travel to the past? Irreversible physics along closed timelike curves," <a href="https://arxiv.org/abs/1912.04702">arXiv:1912.04702</a> (2019). <span class="ok">full text read</span></li>
+    <li>Gavassino, "Life on a closed timelike curve," Class. Quantum Grav. 42, 015002 (2025), <a href="https://arxiv.org/abs/2405.18640">arXiv:2405.18640</a>. <span class="ok">verified</span></li>
+  </ol>
+
+  <div class="colophon">
+    <p>Chronology Lab · Report II · produced 2026-07-26 by Claude (Fable 5) with Kevin Schmidt ·
+    part of the <a href="https://kykli.dev/chronologylab/">Chronology Lab</a> project
+    (<a href="https://github.com/kschmidt1144/ChronologyLab">github.com/kschmidt1144/ChronologyLab</a>).
+    Pre-registration: <code>docs/P1_TARGET.md</code> (commit <code>f039282</code>). Adversarial
+    novelty scan: three parallel research agents, results in <code>docs/P1_NOVELTY.md</code>.</p>
+  </div>
+
+</div>

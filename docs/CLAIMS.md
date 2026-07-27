@@ -258,6 +258,16 @@ This is our repair of "entropy must remain exactly the same" — and the stronge
 - *Test route:* derivation (S3) + literature (S1) + toy estimate (TM5).
 - *Falsifier:* a consistent macroscopic dissipative closed-worldline model with O(1) probability.
 - *Lean:* TRUE as the suppressed-not-impossible version — E3 now, targeting E2.
+- *Report II upgrade (2026-07-26):* in the Markovian detailed-balance class the undriven version
+  is now an **identity** — every consistent loop has s ≡ 0 exactly (T2a, telescoping) — and the
+  fluctuation cost is carried entirely by the closure probability (T1). Status: E1/E2-in-model.
+  See `report2/`.
+- *Credit adjustment (2026-07-26, found by the P1 novelty scan):* the qualitative content of this
+  leaf — dS/dτ must vanish around a CTC, and no records/memory can survive one — was published by
+  Rovelli, "Can we travel to the past? Irreversible physics along closed timelike curves"
+  (arXiv:1912.04702, 2019), which we had not known when Report I called the memory corollary "our
+  derivation." Report I's claim is downgraded to *independent rediscovery, quantified here*;
+  Gavassino (CQG 2025, arXiv:2405.18640) reaches memory-erasure by exact quantum kinematics.
 
 **C2b. "A one-shot trip to the past must leave the universe's total entropy unchanged."**
 - *What's known:* No such constraint is known. In M1 there is one history; entropy can rise
@@ -408,6 +418,10 @@ version of C0's conclusion.)
 - *Test route:* TM5 toy estimate + S1 literature on statistics of consistent solutions.
 - *Falsifier:* consistent macroscopic-intervention solutions shown to carry no measure penalty.
 - *Lean:* TRUE in spirit, pending quantification — E5 now, targeting E2/E3.
+- *Report II upgrade (2026-07-26):* **quantified** — closure probability = Boltzmann weight of
+  the loop state (T1), extensive in components (T4): one conspiratorial gram ⇒ P ≈ 10^{−2.6×10²²},
+  now derived with stated assumptions rather than assumed. Provably never zero (floors positive):
+  "almost all," never "impossible." Status: E1/E2-in-model. See `report2/`.
 
 ---
 
@@ -568,6 +582,19 @@ preamble; a toy that "works" proves logical coherence of a mechanism, never phys
   repaired, substance unchanged: every tested term (enthalpy, total energy, exact equality,
   infinite looping, the ∞-or-0 dichotomy) is retained, so no leaf verdict is affected. The freeze
   rule is henceforth "no drift in substance"; the superseded capture remains in git history.
+- 2026-07-26 — **P1 executed ("The thermodynamic price of a consistent time loop") — Report II
+  (`report2/`).** Pre-registered targets (commit `f039282`) all held; no falsifier fired. In the
+  declared Markovian local-detailed-balance class with an ideal junction: **T1** closure
+  probability decays monotonically to the Boltzmann weight of the loop state (E1/E2); **T2a
+  sharpening** — undriven consistent loops have *exactly zero* entropy production (telescoping
+  identity; all 2,187 enumerated loops at s = 0) — C2a's reversibility is an in-class identity,
+  with the suppression carried entirely by closure cost; **T2b** driven conditional detailed FT
+  verified to 3×10⁻¹⁴ across 6,561 loops, ⟨e^−s⟩_C = 1, ⟨s⟩_C ≥ 0; **C3** no pastward
+  free-energy delivery except at e^{−ΔF/k_BT}; **T4** extensivity — one conspiratorial gram ⇒
+  P ≈ 10^{−2.6×10²²} (TM5's scale now derived); **R5** Deutsch consistency gate-free at every
+  coupling while record-level closure pays the classical price — the cost attaches to
+  records/memory. Leaf upgrades: C2a E3 → E1/E2-in-model; C5c E3 → E1/E2-in-model (quantified).
+  Novelty positioning: `docs/P1_NOVELTY.md` (3-agent adversarial scan).
 
 ## 9. Glossary
 

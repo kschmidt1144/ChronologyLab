@@ -42,6 +42,7 @@ testable pieces, verdicts earned per piece and then recomposed.
 | S2 | Toy models TM1–TM6 (`toys/run_all.py`) | ✅ 2026-07-26 (minis) |
 | S3 | Derivations + the C7 inference audit | ✅ 2026-07-26 (first pass) |
 | S4 | **Report I** — verdict on the claim + conditional T1–T3 table | ✅ 2026-07-26 — `report/index.html` |
+| P1 | **Report II** — "The thermodynamic price of a consistent time loop": T3 quantified (closure = Boltzmann weight of the loop state; exact loop reversibility; the price attaches to records) — pre-registered, adversarially novelty-scanned, exact-checked | ✅ 2026-07-26 — `report2/index.html` |
 
 ## Orientation (pre-registered, subject to revision by evidence)
 

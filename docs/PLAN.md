@@ -27,6 +27,12 @@ Evidence flows *into* leaves from two directions — the literature (S1) and our
 > (4) SEP "Time Travel and Modern Physics" pass for philosophical counterarguments we haven't
 > steelmanned.
 
+> **P1 executed 2026-07-26 → Report II** (`report2/`; follow-up item 3 thereby superseded):
+> pre-registered targets T1–T5 all held (one logged sharpening, T2a exact reversibility);
+> C2a/C5c upgraded to E1/E2-in-model; adversarial novelty scan in `docs/P1_NOVELTY.md`.
+> Remaining open options: C4b deep dive, full TM2 billiard, SEP counterargument pass, P2/P3
+> frontier programs.
+
 ---
 
 ## Stages — inputs, outputs, and what "done" means
