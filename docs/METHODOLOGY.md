@@ -35,7 +35,9 @@ A compound claim ("almost all time travel is impossible **because** energy books
 part did the work and which part failed. The method:
 
 1. **Freeze the original.** Quote it verbatim, typos and all, and never edit it. The thing under
-   test must not drift.
+   test must not drift. (One sanctioned exception: the *claimant* may replace the capture with a
+   canonical re-wording of their own claim — spelling and grammar, never substance — with the
+   replacement logged in the changelog. Exercised here 2026-07-26.)
 2. **Steelman with a logged diff.** Repair category errors and ambiguities *in the strongest
    direction for the claim*, and log every repair with a reason (our `CLAIMS.md §2 A4`). Why: if
    we attack a weak reading, refuting it is worthless ("straw man"); if we silently strengthen it,

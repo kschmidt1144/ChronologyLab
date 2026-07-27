@@ -10,22 +10,27 @@ primary sources — per-item status, quotes, and URLs in the report's References
 
 ---
 
-## 0. The original claim (frozen verbatim)
+## 0. The claim (canonical statement)
 
-> "Almost all time travel to the past is impossible because of exponential energy and disorder
-> potiential, if time travel is possible the state of the universes enthalpy/entropy as well as
-> total energy bust remain the exast same when time returns to the present (when the jump to past
-> occured). My specifically all possible paths that do not result in exactly equaly energy state
-> will be cancelled out because. This is because of the infinite looping potential of jumps to the
-> past. even a tiny difference will be driven towards infinite or 0 as infinite time travel jumps
-> occur."
+> "Almost all time travel to the past is impossible, because of the exponential growth potential
+> of energy and disorder mismatches. If time travel is possible, then the universe's state — its
+> enthalpy/entropy as well as its total energy — must be exactly the same when time returns to
+> the present (the moment the jump to the past occurred). More specifically, all possible paths
+> that do not result in an exactly equal energy state will be cancelled out. This is because of
+> the infinite looping potential of jumps to the past: even a tiny difference will be driven
+> toward infinity or zero as unlimited time-travel jumps occur."
 >
-> — Kevin, 2026-07-26, project kickoff
+> — Kevin, 2026-07-26 (canonical wording adopted the same day at the claimant's direction,
+> replacing the informal verbatim capture — spelling/grammar repaired, substance unchanged; see
+> CHANGELOG)
 
-We freeze the original wording (typos included) because **the claim under test must not drift**
-while we refine our reading of it. Every repair we make for testability is logged in §2 as a
+The canonical statement is the fixed reference: **the claim under test must not drift in
+substance** while we refine our reading of it. The wording repair was made at the claimant's own
+direction and touched spelling and grammar only — every term the leaves test, including
+"enthalpy" and "total energy," is retained. Any *substantive* repair is logged in §2 as a
 steelmanning move, with a reason. This guards against the "motte-and-bailey" failure mode:
-quietly proving an easier claim and crediting the original.
+quietly proving an easier claim and crediting the original. The superseded informal capture
+survives only in git history (initial commit).
 
 ### 0.1 Plain-language steelman (what we take the claim to assert)
 
@@ -558,6 +563,11 @@ preamble; a toy that "works" proves logical coherence of a mechanism, never phys
   gloss; Hawking's "safe for historians" line exact wording documented (common variant misquotes
   it); C1b's checkable primary is Cramer–Forward–Morris–Visser–Benford–Landis 1995 (mechanism:
   Frolov–Novikov 1990), not Visser's book.
+- 2026-07-26 — **Claim wording replaced at the claimant's direction.** The informal verbatim
+  capture (with typos) was superseded by the canonical statement in §0 — spelling and grammar
+  repaired, substance unchanged: every tested term (enthalpy, total energy, exact equality,
+  infinite looping, the ∞-or-0 dichotomy) is retained, so no leaf verdict is affected. The freeze
+  rule is henceforth "no drift in substance"; the superseded capture remains in git history.
 
 ## 9. Glossary
 

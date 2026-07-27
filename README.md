@@ -4,15 +4,15 @@ A claims-ledger research project: take one big conjecture about time travel to t
 thoroughly prove or disprove it — assumptions explicit, reasoning decomposed into individually
 testable pieces, verdicts earned per piece and then recomposed.
 
-## The claim under test (Kevin, 2026-07-26 — frozen verbatim in `docs/CLAIMS.md §0`)
+## The claim under test (Kevin, 2026-07-26 — canonical statement in `docs/CLAIMS.md §0`)
 
-> "Almost all time travel to the past is impossible because of exponential energy and disorder
-> potential; if time travel is possible, the state of the universe's enthalpy/entropy as well as
-> total energy must remain exactly the same when time returns to the present… all possible paths
-> that do not result in an exactly equal energy state will be cancelled out… because of the
-> infinite looping potential of jumps to the past — even a tiny difference will be driven towards
-> infinity or 0 as infinite time travel jumps occur." *(lightly copyedited here; the ledger keeps
-> the untouched original)*
+> "Almost all time travel to the past is impossible, because of the exponential growth potential
+> of energy and disorder mismatches. If time travel is possible, then the universe's state — its
+> enthalpy/entropy as well as its total energy — must be exactly the same when time returns to
+> the present (the moment the jump to the past occurred). More specifically, all possible paths
+> that do not result in an exactly equal energy state will be cancelled out. This is because of
+> the infinite looping potential of jumps to the past: even a tiny difference will be driven
+> toward infinity or zero as unlimited time-travel jumps occur."
 
 ## Documents
 

@@ -6,8 +6,10 @@ no code yet.**
 
 ## Ground rules
 
-- The original claim is **frozen verbatim** in `docs/CLAIMS.md §0` — never edit it; log repairs in
-  the assumption ledger (§2 A4).
+- The claim's **canonical statement** lives in `docs/CLAIMS.md §0` — its **substance must not
+  drift** (wording was repaired at Kevin's direction 2026-07-26, logged in the CHANGELOG; the
+  original informal capture survives only in git history). Log substantive repairs in the
+  assumption ledger (§2 A4).
 - Leaf verdicts move **only** with an entry in the CHANGELOG (`docs/CLAIMS.md §8`) naming the
   evidence. Leans ≠ verdicts.
 - Citations carry `[v?]` until verified against the primary source (Stage 1); then replace with a
