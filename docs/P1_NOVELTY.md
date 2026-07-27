@@ -53,17 +53,29 @@ Residual risk (agent 2): Horwich 1975 full text, Wasserman ch. 4 §3 body, and E
 verified only via reviews/secondary restatements — none shows any hint of statistical mechanics,
 but exact wording was not fully inspected.
 
-## 3. Novikov-school scan
+## 3. Novikov-school scan (agent 3 — completed after the first Report II build; folded in via
+amendment commit, as promised)
 
-*Status note:* the deep-archive agent ran long; its single highest-risk item (Lossev–Novikov's
-"Jinn") was therefore **verified directly in-session** (IOP abstract, verbatim) and is included
-below; the agent's full return is appended on completion, and any material change would be folded
-into Report II via a documented amendment commit.
+**Headline finding: the "probability over self-consistent histories" program stopped, in print,
+exactly where P1 begins.**
 
 | Work | What it actually does | Preempts? |
 |---|---|---|
-| **Lossev & Novikov, "The Jinn of the time machine: nontrivial self-consistent solutions," CQG 9, 2309 (1992)** — abstract verified verbatim | Hypothesizes objects with closed worldlines ("Jinn") and identifies their thermodynamic maintenance requirement: "These systems are possible only if they can, by interacting with external objects, gain energy to regenerate their internal structure." Qualitative; no probabilities, no measure, no fluctuation relations. | **Partially** — names the free-energy regeneration requirement of closed worldlines; P1's T1/C3 supply its price (closure measure e^{−ΔF/k_BT}) |
-| Carlini, Frolov, Mensky, Novikov & Soleng 1995; Mikheeva & Novikov 1993 (covered in scan 1) | Consistency from least action; dissipative billiard still admits consistent solutions — existence, never probability. | No |
+| **The EKT quantum sequel ("paper II")** — EKT PRD 44, 1077 (1991) announced Klinkhammer–Thorne "paper II" making the ill-posed problem "quantum-mechanically well posed in the sense of producing unique probability distributions"; **never published**. Entire published residue = one WKB sentence in the Consortium paper (PRD 42, 1915, §II H): "a 50% probability for the ball's wave packet to emerge … along each of the two classical trajectories," with "No attempt has been made to prove convergence." Cited ever after as "Klinkhammer and Thorne (unpublished)"; absent from Thorne's own GR13 review (1993). | Equal-weight WKB amplitudes over two solutions; microscopic, non-thermodynamic, abandoned. | **Partially** (amplitude weighting exists in one unpublished calculation) — **no** on any thermodynamic content |
+| **Carlini & Novikov, IJMPD 5, 445 (1996), gr-qc/9607063** | Stationary-action consistency (paper II of that series); probability question explicitly deferred to "a future publication" — which never appeared (INSPIRE). | No — an in-print deferral of exactly P1's question |
+| **Dolanský & Krtouš, PRD 82, 124056 (2010), arXiv:1011.2881** | Re-derives billiard multiplicity; speculates that semiclassical weighting "could give an estimate" but "it's not trivial at all to complete this program." | No — second in-print deferral |
+| **Mensky & Novikov, IJMPD 5, 1 (1996), gr-qc/0007063; and IJMPD 5, 179 (1996), gr-qc/0007064** | Path integrals for *free* particles in time-machine spacetimes: winding-sector superselection, "probability … to return n times into its past infinitely decreases when n tends to infinity." Amplitude bookkeeping; no interaction, no dissipation, no measure over consistent solutions. | No (adjacent to our TM6 winding mathematics; non-thermodynamic) |
+| **Lossev & Novikov, "The Jinn of the time machine," CQG 9, 2309 (1992)** — abstract verified verbatim (IOP); entropy passage verified at secondary level (paywalled full text) | Closed-worldline objects "are possible only if they can, by interacting with external objects, gain energy to regenerate their internal structure"; secondary sources report the argument that a Jinn, as an open system, "could … regain 'lost' entropy." Qualitative; no probabilities, no measure. | **Partially** — names the free-energy regeneration requirement; P1's T1/C3 supply its price |
+| **Bishop, Costa & Ralph, PRA 103, 042223 (2021), arXiv:2007.12677** | Quantum billiard with a **clock/record** distinguishing trajectories: D-CTCs weight the classical solution family by Deutsch's maximum-entropy rule; P-CTCs give equal superposition ("supporting a conjecture by Friedman et al."); "D-CTCs produce entropy through mixing." | **Partially — the nearest modern neighbor to R5**: records distinguishing branches, entropy as *selection*; weights uniform/max-entropy, never Boltzmann; no closure pricing, no fluctuation theorem |
+| Politzer PRD 46, 4470; Boulware PRD 46, 4421; Friedman–Papastamatiou–Simon PRD 46, 4442/4456; Hartle PRD 49, 6543 | Amplitude/unitarity analyses on CTC backgrounds — histories weighted by phases, never by dissipation. | No |
+| Mikheeva & Novikov PRD 47, 1432 (1993); Novikov PRD 45, 1989 (1992); Krasnikov PRD 65, 064013; González-Díaz PRD 82, 044016 | Dissipative billiard consistency exists ("the inelasticity has no effect whatsoever"); horizon thermality; no probability, no entropy accounting of histories. | No |
+
+Agent caveats: CaltechTHESIS was unreachable (Klinkhammer's thesis checked via search snippets
+only — INSPIRE record shows no quantum-billiard publication); Lossev–Novikov's entropy passage
+rests on abstract + secondary citation. Working extracts preserved in the session scratchpad.
+
+**Consequence for P2:** the quantum-measure-on-multiplicity program (our proposed P2) is
+confirmed open *with two in-print deferrals by its own school* — stronger ground than assumed.
 
 ## Positioning obligations for the write-up
 
