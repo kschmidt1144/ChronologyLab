@@ -1,0 +1,759 @@
+<title>Chronology Lab — Report I: the claim under test</title>
+<style>
+  :root {
+    --bg: #f7f8fa; --ink: #15171c; --ink2: #555b66; --ink3: #8a8f99;
+    --hair: #e2e4ea; --accent: #2a78d6; --accent-soft: rgba(42, 120, 214, .10);
+    --surface: #fcfcfb; --panel: #eef0f4;
+    --good: #0ca30c; --crit: #d03b3b; --warn: #fab219; --serious: #ec835a;
+    --sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+    --serif: Charter, "Iowan Old Style", Georgia, serif;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #101216; --ink: #e9ebef; --ink2: #a6adba; --ink3: #767d8a;
+      --hair: #262a32; --accent: #3987e5; --accent-soft: rgba(57, 135, 229, .14);
+      --surface: #1a1a19; --panel: #171a20;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #101216; --ink: #e9ebef; --ink2: #a6adba; --ink3: #767d8a;
+    --hair: #262a32; --accent: #3987e5; --accent-soft: rgba(57, 135, 229, .14);
+    --surface: #1a1a19; --panel: #171a20;
+  }
+  html { background: var(--bg); }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 17px/1.68 var(--serif);
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 20px 90px; }
+  a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  a:focus-visible, button:focus-visible, input:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 2px;
+  }
+  h1, h2, h3 { font-family: var(--sans); color: var(--ink); text-wrap: balance; line-height: 1.2; }
+  h1 { font-size: 34px; font-weight: 700; letter-spacing: -.015em; margin: 10px 0 12px; }
+  h2 { font-size: 22px; font-weight: 650; margin: 56px 0 12px; }
+  h3 { font-size: 16px; font-weight: 650; margin: 34px 0 8px; }
+  p { margin: 0 0 14px; }
+  .eyebrow {
+    font: 600 11.5px/1 var(--sans); letter-spacing: .1em; text-transform: uppercase;
+    color: var(--ink3); margin: 0 0 6px;
+  }
+  .dek { font-size: 19px; color: var(--ink2); margin: 0 0 18px; }
+  .meta { font: 500 12.5px/1.7 var(--sans); color: var(--ink3); }
+  .meta b { color: var(--ink2); font-weight: 600; }
+
+  /* interference-fringe signature band */
+  .fringe {
+    height: 9px; margin: 22px 0 34px; border-radius: 2px;
+    background: repeating-linear-gradient(90deg, var(--accent) 0 2px, transparent 2px 11px);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 32%, #000 68%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 32%, #000 68%, transparent);
+    opacity: .55;
+  }
+
+  .tldr {
+    background: var(--accent-soft); border: 1px solid var(--hair); border-left: 3px solid var(--accent);
+    border-radius: 10px; padding: 18px 20px; margin: 26px 0 8px;
+  }
+  .tldr p { margin: 0 0 10px; } .tldr p:last-child { margin: 0; }
+
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px; vertical-align: middle;
+    font: 650 10.5px/1 var(--mono); letter-spacing: .05em; text-transform: uppercase;
+    padding: 4px 9px; border-radius: 999px; border: 1px solid var(--hair);
+    color: var(--ink2); background: var(--bg); white-space: nowrap;
+  }
+  .chip::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--ink3); }
+  .chip.v-refuted::before { background: var(--crit); }   .chip.v-refuted { border-color: color-mix(in oklab, var(--crit) 40%, var(--hair)); }
+  .chip.v-holds::before { background: var(--good); }     .chip.v-holds { border-color: color-mix(in oklab, var(--good) 40%, var(--hair)); }
+  .chip.v-part::before { background: var(--serious); }   .chip.v-part { border-color: color-mix(in oklab, var(--serious) 45%, var(--hair)); }
+  .chip.v-open::before { background: var(--accent); }    .chip.v-open { border-color: color-mix(in oklab, var(--accent) 45%, var(--hair)); }
+  .chip.v-muted::before { background: var(--ink3); }
+  .chip.e { text-transform: none; letter-spacing: .02em; }
+
+  .leaf { border-top: 1px solid var(--hair); padding-top: 26px; margin-top: 34px; }
+  .leaf-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px; margin-bottom: 10px; }
+  .leaf-id { font: 700 13px/1 var(--mono); color: var(--accent); letter-spacing: .03em; }
+  .leaf-title { font-family: var(--sans); font-size: 17px; font-weight: 650; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 2px 0 14px; }
+
+  .claim-quote {
+    font-style: italic; color: var(--ink2); border-left: 2px solid var(--hair);
+    margin: 0 0 14px; padding: 2px 0 2px 14px;
+  }
+  blockquote.q {
+    margin: 14px 0; padding: 12px 16px; background: var(--panel);
+    border-radius: 8px; font-size: 15.5px; color: var(--ink2);
+  }
+  blockquote.q cite { display: block; margin-top: 8px; font: 500 12.5px/1.5 var(--sans); font-style: normal; color: var(--ink3); }
+
+  .figcard {
+    background: var(--surface); border: 1px solid var(--hair); border-radius: 10px;
+    padding: 14px 12px 8px; margin: 18px 0;
+  }
+  .fig { width: 100%; height: auto; display: block; }
+  .fig-dark { display: none; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .fig-light { display: none; }
+    :root:not([data-theme="light"]) .fig-dark { display: block; }
+  }
+  :root[data-theme="dark"] .fig-light { display: none; }
+  :root[data-theme="dark"] .fig-dark { display: block; }
+  :root[data-theme="light"] .fig-light { display: block; }
+  :root[data-theme="light"] .fig-dark { display: none; }
+  figcaption { font: 500 13px/1.6 var(--sans); color: var(--ink3); padding: 8px 4px 4px; }
+  figcaption b { color: var(--ink2); }
+  figure { margin: 0; }
+
+  .scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font: 14px/1.55 var(--sans); font-variant-numeric: tabular-nums; }
+  th { text-align: left; font-weight: 650; color: var(--ink2); font-size: 12.5px; text-transform: uppercase; letter-spacing: .05em; }
+  th, td { padding: 8px 12px 8px 0; border-bottom: 1px solid var(--hair); vertical-align: top; }
+  td.id { font: 650 12.5px/1.5 var(--mono); color: var(--accent); white-space: nowrap; }
+
+  .stat {
+    background: var(--surface); border: 1px solid var(--hair); border-radius: 10px;
+    padding: 22px 20px; margin: 18px 0; text-align: center;
+  }
+  .stat .v { font: 600 40px/1.1 var(--sans); letter-spacing: -.01em; }
+  .stat .l { font: 600 13px/1.5 var(--sans); color: var(--ink2); margin-top: 6px; }
+  .stat .s { font: 400 12.5px/1.6 var(--sans); color: var(--ink3); margin-top: 4px; }
+
+  .callout { background: var(--panel); border: 1px solid var(--hair); border-radius: 10px; padding: 16px 18px; margin: 18px 0; }
+  .callout .eyebrow { margin-bottom: 8px; }
+  ul, ol { margin: 0 0 14px; padding-left: 24px; }
+  li { margin-bottom: 6px; }
+  .refs li { font-size: 15px; color: var(--ink2); margin-bottom: 9px; }
+  .ok { color: var(--good); font-weight: 650; }
+  .checklist { list-style: none; padding-left: 4px; }
+  .checklist li { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px; }
+  .checklist input { margin-top: 5px; accent-color: var(--accent); }
+  code, .m { font-family: var(--mono); font-size: .88em; background: var(--panel); padding: 1px 5px; border-radius: 4px; }
+  .colophon { border-top: 1px solid var(--hair); margin-top: 60px; padding-top: 18px; font: 400 13px/1.7 var(--sans); color: var(--ink3); }
+  @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">Chronology Lab · Report I · Stages S1–S3 (mini) · 2026-07-26</p>
+    <h1>Does thermodynamics forbid time travel to the past?</h1>
+    <p class="dek">The claim ledger executed leaf by leaf, C1a → C7: every citation verified against
+    primary sources, six miniature computational models run, verdicts assembled — for Kevin's review.</p>
+    <p class="meta"><b>Evidence levels:</b> E1 theorem · E2 explicit computation · E3 controlled heuristic ·
+    E4 verified literature · E5 intuition &nbsp;·&nbsp; <b>Provenance:</b> every statement tagged
+    verified / derived / computed / reported. Full ledger: <code>docs/CLAIMS.md</code>.</p>
+    <div class="fringe" role="presentation"></div>
+  </header>
+
+  <div class="tldr">
+    <p><b>Verdict on the claim as stated: it does not survive</b> — but it fails in an unusually
+    honorable way. Two of its supporting legs are refuted (there is no global "energy of the
+    universe" to conserve, and the "driven to 0" branch <i>stabilizes</i> time travel instead of
+    forbidding it), and in every model system studied, self-consistent histories turn out to be
+    generic rather than measure-zero-rare.</p>
+    <p><b>What survives is substantial.</b> Its amplification mechanism is Hawking's chronology
+    protection conjecture — the field's leading (still unresolved) argument against time machines.
+    Its exact-match rule is the Novikov self-consistency principle, enforced automatically rather
+    than by luck — and our winding-sum computation makes the claim's own cancellation mechanism
+    concentrate all amplitude on <i>exact energy match</i>, just as Kevin proposed. And its "almost
+    all" becomes a real number: a conspiratorial single gram costs probability ~10<sup>−2.2×10²²</sup>
+    per pass — astronomically suppressed, never exactly zero.</p>
+    <p><b>Nearest true statements:</b> T1 — macroscopic time machines plausibly self-destruct at
+    formation (open conjecture). T2 — if loops exist, you can visit the past but never change it
+    (well supported in studied models). T3 — macroscopic pastward intervention is entropically
+    suppressed like exp(−ΔS/k<sub>B</sub>) (defensible, quantified here at toy level).</p>
+  </div>
+
+  <nav class="meta" style="margin:14px 0 0">
+    Jump to: <a href="#claim">the claim</a> · <a href="#index">verdict index</a> ·
+    <a href="#c1a">C1</a> · <a href="#c2a">C2</a> · <a href="#c3a">C3</a> · <a href="#c4a">C4</a> ·
+    <a href="#c5a">C5</a> · <a href="#c6a">C6</a> · <a href="#c7">C7 audit</a> ·
+    <a href="#review">review checklist</a> · <a href="#refs">references</a>
+  </nav>
+
+  <h2 id="how">How to read this report</h2>
+  <p>The original claim was frozen verbatim on day one and decomposed into 19 individually testable
+  sub-claims ("leaves") grouped into seven legs. Each leaf below carries: the claim, a
+  <b>verdict chip</b>, the <b>evidence level</b> the verdict rests on (E1 = proved within a stated
+  framework … E5 = intuition), and what we actually found — with verbatim quotes from primary
+  sources where they carry weight. Verdict leans were pre-registered <i>before</i> any evidence was
+  gathered, so movement is visible; every movement is logged in the ledger's changelog. One honesty
+  rail up front: all conclusions here are <i>conditional on frameworks</i> (classical general
+  relativity, semiclassical gravity, quantum-information CTC models) — nothing about time travel
+  can currently be settled by experiment, and leaves that bottom out at "requires quantum gravity"
+  say so.</p>
+
+  <h2 id="claim">The claim under test (frozen)</h2>
+  <blockquote class="claim-quote">"Almost all time travel to the past is impossible because of
+  exponential energy and disorder potiential, if time travel is possible the state of the universes
+  enthalpy/entropy as well as total energy bust remain the exast same when time returns to the
+  present (when the jump to past occured). My specifically all possible paths that do not result in
+  exactly equaly energy state will be cancelled out because. This is because of the infinite
+  looping potential of jumps to the past. even a tiny difference will be driven towards infinite or
+  0 as infinite time travel jumps occur." <span style="font-style:normal">— Kevin, 2026-07-26
+  (typos preserved deliberately; the artifact under test must not drift)</span></blockquote>
+
+  <p><b>Steelman.</b> (1) Backward travel creates loops: present → past → present. (2) An
+  acceptable history must return the universe's books — energy, entropy — exactly. (3) Loops
+  compound without limit and amplify any mismatch toward ∞ or 0, eliminating ("cancelling")
+  mismatched histories. (4) Exact matches are a measure-zero fine-tuning, so almost all attempted
+  trips correspond to no allowed history.</p>
+
+  <p><b>One repair made before testing</b> (logged): <i>enthalpy</i> was dropped — H = U + PV needs
+  a constant-pressure environment, which the universe does not have; entropy carries that leg. And
+  "the state when time returns" must be pinned to a model of travel: <b>M1</b> one self-consistent
+  history (there is no "original 2026 without the traveler" to compare against), <b>M2</b>
+  branching arrival (the constraint dissolves), or <b>M3</b> a mutable timeline (requires a second
+  time dimension physics doesn't have). The claim's dynamics run in M3; its conclusion belongs to
+  M1; the best formulation of its cancellation — added later the same day at Kevin's suggestion —
+  is stationary-phase interference (C6b), which needs no M3 at all.</p>
+
+  <p><b>Background, verified:</b> general relativity really does admit time-travel solutions —
+  Gödel's rotating universe (Rev. Mod. Phys. 21, 447 (1949): "it is theoretically possible in
+  these worlds to travel into the past"), Gott's passing cosmic strings (PRL 66, 1126 (1991)), and
+  the Morris–Thorne–Yurtsever wormhole time machine (PRL 61, 1446 (1988)), which needs
+  energy-condition-violating exotic matter — itself squeezed hard by the Ford–Roman quantum
+  inequalities (PRD 53, 5496 (1996): macroscopic traversable wormholes "very improbable"). Nothing
+  below assumes machines exist; the question is what would constrain them if they did.</p>
+
+  <h2 id="index">Verdict index — all 19 leaves</h2>
+  <div class="scroll"><table>
+    <tr><th>ID</th><th>Claim (short)</th><th>Verdict</th><th>Level</th></tr>
+    <tr><td class="id"><a href="#c1a">C1a</a></td><td>"Total energy of the universe" is a well-defined conserved quantity</td><td><span class="chip v-refuted">refuted</span></td><td>E4</td></tr>
+    <tr><td class="id"><a href="#c1b">C1b</a></td><td>Pastward transport violates energy conservation</td><td><span class="chip v-refuted">refuted</span></td><td>E4</td></tr>
+    <tr><td class="id"><a href="#c1c">C1c</a></td><td>State functions must be periodic around a closed worldline</td><td><span class="chip v-part">holds — vacuously</span></td><td>E1</td></tr>
+    <tr><td class="id"><a href="#c2a">C2a</a></td><td>Dissipation forbids closed worldlines (up to fluctuations)</td><td><span class="chip v-holds">holds (as suppression)</span></td><td>E3</td></tr>
+    <tr><td class="id"><a href="#c2b">C2b</a></td><td>A one-shot trip must conserve the universe's entropy</td><td><span class="chip v-refuted">refuted as stated</span></td><td>E2</td></tr>
+    <tr><td class="id"><a href="#c2c">C2c</a></td><td>Enthalpy must match</td><td><span class="chip v-muted">retired</span></td><td>—</td></tr>
+    <tr><td class="id"><a href="#c3a">C3a</a></td><td>Consistency = exact fixed point of the loop map</td><td><span class="chip v-holds">holds in M1 (±ħ)</span></td><td>E1/E2</td></tr>
+    <tr><td class="id"><a href="#c3b">C3b</a></td><td>Consistent solutions exist for generic initial data</td><td><span class="chip v-holds">holds — against the claim</span></td><td>E4/E2</td></tr>
+    <tr><td class="id"><a href="#c3c">C3c</a></td><td>The consistent solution is unique</td><td><span class="chip v-refuted">refuted</span></td><td>E4/E2</td></tr>
+    <tr><td class="id"><a href="#c4a">C4a</a></td><td>Something traverses the loop unboundedly many times</td><td><span class="chip v-part">split</span></td><td>E4</td></tr>
+    <tr><td class="id"><a href="#c4b">C4b</a></td><td>Gain &gt; 1 divergence destroys time machines (chronology protection)</td><td><span class="chip v-open">open</span></td><td>E4</td></tr>
+    <tr><td class="id"><a href="#c4c">C4c</a></td><td>Gain &lt; 1 ("driven to 0") also makes travel impossible</td><td><span class="chip v-refuted">refuted — backfires</span></td><td>E1/E2</td></tr>
+    <tr><td class="id"><a href="#c4d">C4d</a></td><td>Marginal gain ≈ 1</td><td><span class="chip v-open">open</span></td><td>E2</td></tr>
+    <tr><td class="id"><a href="#c5a">C5a</a></td><td>"Almost all" requires a declared measure</td><td><span class="chip v-muted">repair adopted</span></td><td>—</td></tr>
+    <tr><td class="id"><a href="#c5b">C5b</a></td><td>Consistent solutions are measure-zero-rare</td><td><span class="chip v-refuted">refuted in studied models</span></td><td>E4/E2</td></tr>
+    <tr><td class="id"><a href="#c5c">C5c</a></td><td>Macroscopic intervention is entropically suppressed</td><td><span class="chip v-holds">holds in spirit</span></td><td>E3</td></tr>
+    <tr><td class="id"><a href="#c6a">C6a</a></td><td>Mismatched branches are cancelled (postselection)</td><td><span class="chip v-holds">holds in P-CTCs</span></td><td>E2</td></tr>
+    <tr><td class="id"><a href="#c6b">C6b</a></td><td>Cancellation as stationary-phase interference</td><td><span class="chip v-holds">holds as mechanism</span></td><td>E2/E4</td></tr>
+    <tr><td class="id"><a href="#c7">C7</a></td><td>Therefore: almost all pastward travel is impossible</td><td><span class="chip v-refuted">does not follow</span></td><td>E3</td></tr>
+  </table></div>
+
+  <!-- ================================================================ C1 -->
+  <h2>Leg C1 — energy: "total energy must return exactly"</h2>
+
+  <section class="leaf" id="c1a">
+    <div class="leaf-head"><span class="leaf-id">C1a</span>
+      <span class="leaf-title">"The total energy of the universe is a well-defined, conserved quantity."</span></div>
+    <div class="chips"><span class="chip v-refuted">refuted</span><span class="chip e">E4 · verified literature</span></div>
+    <p>General relativity — the only framework in which pastward time travel is even formulable —
+    does not define a conserved total energy for a generic universe. Conservation there is local
+    (∇·T = 0, always enforced by the field equations); a <i>global</i> energy needs special
+    structure the real universe lacks: a time-translation symmetry (Noether's theorem — no
+    symmetry, no conservation law) or special asymptotics (ADM/Bondi mass). The expanding universe
+    fails the claim's bookkeeping today, with no time machine involved: photons redshift and their
+    energy simply is not accounted for globally; dark-energy density holds constant while volume
+    grows.</p>
+    <blockquote class="q">"When the space through which particles move is changing, the total
+      energy of those particles is not conserved."
+      <cite>— Sean Carroll, "Energy Is Not Conserved" (2010) ·
+      <a href="https://www.preposterousuniverse.com/blog/2010/02/22/energy-is-not-conserved/">preposterousuniverse.com</a> · verified</cite></blockquote>
+    <blockquote class="q">"A local (point-like) density of energy associated with the gravitational
+      field cannot be defined in General Relativity."
+      <cite>— Jaramillo &amp; Gourgoulhon (2010), citing Wald, <i>General Relativity</i> (1984) ·
+      <a href="https://arxiv.org/abs/1001.5429">arXiv:1001.5429</a> · verified</cite></blockquote>
+    <p>The Weiss–Baez physics-FAQ entry "Is Energy Conserved in General Relativity?" confirms
+    exactly the split this leaf turns on: the local (differential) conservation law survives, the
+    global (integral) form does not — and of the CMB's redshifted energy, "others will say that the
+    energy is simply lost"
+    (<a href="https://math.ucr.edu/home/baez/physics/Relativity/GR/energy_gr.html">math.ucr.edu</a> · verified).</p>
+    <p><b>Consequence.</b> The claim's energy constraint cannot even be stated globally. It
+    retreats to C1b (local bookkeeping) — where it is satisfied, not violated.</p>
+  </section>
+
+  <section class="leaf" id="c1b">
+    <div class="leaf-head"><span class="leaf-id">C1b</span>
+      <span class="leaf-title">"Transporting mass/energy to the past violates energy conservation."</span></div>
+    <div class="chips"><span class="chip v-refuted">refuted</span><span class="chip e">E4 · verified literature</span></div>
+    <p>In the standard time-machine construction (a traversable wormhole with time-shifted mouths),
+    local conservation holds automatically everywhere — the field equations do not permit anything
+    else. The books balance physically: the mouth an object enters gains its mass-energy, the mouth
+    it exits loses it. And in the single-history model M1 there is no "extra copy" to account for:
+    the traveler present during 1926–2026 was always part of that history's stress-energy.</p>
+    <blockquote class="q">"As this mass passes through the wormhole, the entrance mouth will gain
+      mass while the exit mouth will lose mass by the same amount."
+      <cite>— Cramer, Forward, Morris, Visser, Benford &amp; Landis, PRD 51, 3117 (1995);
+      mechanism credited therein to Frolov &amp; Novikov, PRD 42, 1057 (1990) ·
+      <a href="https://arxiv.org/abs/astro-ph/9409051">arXiv:astro-ph/9409051</a> · verified</cite></blockquote>
+    <p>Verification note: the ledger originally pointed at Visser's book for this; the checkable
+    primary turned out to be the Visser-coauthored paper above. Logged as a citation improvement —
+    the content stands unchanged.</p>
+  </section>
+
+  <section class="leaf" id="c1c">
+    <div class="leaf-head"><span class="leaf-id">C1c</span>
+      <span class="leaf-title">"Around a closed worldline, conserved and state quantities must return to their values."</span></div>
+    <div class="chips"><span class="chip v-part">holds — vacuously</span><span class="chip e">E1 · by definition</span></div>
+    <p>True — but with no force. A closed worldline revisits the <i>same events</i>, so "returning
+    to the same value" is just "being what it is there." The non-trivial cost of that periodicity
+    is dynamical, and it belongs to entropy (C2a). Crucially, this constrains only genuinely closed
+    worldlines. A one-shot traveler's worldline is <i>not</i> closed — it runs birth → machine →
+    past → death, threading the loop once — so no periodicity applies to them at all.</p>
+  </section>
+
+  <!-- ================================================================ C2 -->
+  <h2>Leg C2 — entropy: "disorder must return exactly"</h2>
+
+  <section class="leaf" id="c2a">
+    <div class="leaf-head"><span class="leaf-id">C2a</span>
+      <span class="leaf-title">"Dissipation forbids closed worldlines — up to exponentially suppressed fluctuations."</span></div>
+    <div class="chips"><span class="chip v-holds">holds (as suppression)</span><span class="chip e">E3 · derived here</span></div>
+    <p><b>The strongest surviving leg of the original claim.</b> Derivation: along a closed
+    timelike worldline every state function, entropy included, is periodic (C1c). The local second
+    law says entropy <i>production</i> is ≥ 0 along the worldline. Zero net production around the
+    loop with non-negative production everywhere forces <b>exactly zero production at every point</b>
+    — the system must be perfectly reversible for its entire circuit, or else the history is a
+    thermodynamic fluctuation priced at ~exp(−ΔS/k<sub>B</sub>). The modern second law
+    (fluctuation theorems) makes that price precise: suppressed, never impossible.</p>
+    <p><b>Corollary (derived here; Landauer):</b> recording a memory is irreversible, so <i>nothing
+    can remember completing a closed loop</i> — every "I've looped forever" story is
+    self-contradictory for a macroscopic rememberer. And N circuits compound:
+    P ~ exp(−N·ΔS/k<sub>B</sub>) → 0 geometrically. This is the claim's "driven to 0," rigorous —
+    as a probability of dissipative many-loop histories, not as a cancellation of energy.</p>
+  </section>
+
+  <section class="leaf" id="c2b">
+    <div class="leaf-head"><span class="leaf-id">C2b</span>
+      <span class="leaf-title">"A one-shot trip must leave the universe's total entropy unchanged."</span></div>
+    <div class="chips"><span class="chip v-refuted">refuted as stated</span><span class="chip e">E2 · computed (TM3)</span></div>
+    <p>No framework we examined imposes this. In M1 there is one history and entropy can rise
+    monotonically along all of it, loop region included. In the quantum models the bookkeeping is
+    model-dependent — and we computed it: Deutsch's consistency condition drives the loop system
+    <i>toward maximum entropy</i> (our grandfather circuit's unique attractor is the maximally
+    mixed state — see C3b figure), while postselected CTCs can lower entropy (postselection is not
+    an ordinary physical evolution). What a trip does impose is correlation: arrivals from the
+    future are boundary conditions on the past epoch. Exact entropy equality is nowhere required.</p>
+  </section>
+
+  <section class="leaf" id="c2c">
+    <div class="leaf-head"><span class="leaf-id">C2c</span>
+      <span class="leaf-title">"Enthalpy must match."</span></div>
+    <div class="chips"><span class="chip v-muted">retired — category error</span></div>
+    <p>Enthalpy presupposes a pressure reservoir the universe does not have; it is not a
+    cosmological state function. Repair logged on day one; the entropy leg (C2a) carries what this
+    clause was reaching for.</p>
+  </section>
+
+  <!-- ================================================================ C3 -->
+  <h2>Leg C3 — exactness: "only exact matches are allowed"</h2>
+
+  <section class="leaf" id="c3a">
+    <div class="leaf-head"><span class="leaf-id">C3a</span>
+      <span class="leaf-title">"A time-travel history is acceptable iff the loop returns the state exactly."</span></div>
+    <div class="chips"><span class="chip v-holds">holds in M1 (±ħ)</span><span class="chip e">E1 definition · E2 tolerance</span></div>
+    <p>In the single-history model this is true <i>by construction</i> — it is what "solution of
+    the equations on a loop-bearing spacetime" means (the Novikov principle). Two sharpenings.
+    First, the claim is too weak: the <i>full microstate</i> must match, not merely energy and
+    entropy — matching those two is necessary, nowhere near sufficient. Second, from the action
+    formulation (C6b), "exact" acquires a precise tolerance: histories within ~ħ of stationary
+    action still add coherently. For any macroscopic mismatch that tolerance is astronomically
+    exceeded — the classical "exact match" rule <i>emerges</i> in the ħ → 0 limit rather than being
+    postulated. Kevin's "exactly equal" is right, and quantum mechanics even supplies the error
+    bar.</p>
+  </section>
+
+  <section class="leaf" id="c3b">
+    <div class="leaf-head"><span class="leaf-id">C3b</span>
+      <span class="leaf-title">"Consistent solutions exist for generic initial data."</span></div>
+    <div class="chips"><span class="chip v-holds">holds — against the claim</span><span class="chip e">E4 verified · E2 computed</span></div>
+    <p><b>The single strongest fact against the original claim.</b> Wherever consistency has been
+    checked concretely, solutions exist — they are not a fine-tuned rarity.</p>
+    <blockquote class="q">"…the only solutions to the laws of physics that can occur locally in
+      the real Universe are those which are globally self-consistent."
+      <cite>— Friedman, Morris, Novikov, Echeverria, Klinkhammer, Thorne &amp; Yurtsever, PRD 42,
+      1915 (1990), pp. 1916–17 — the Novikov principle stated; the scalar-field Cauchy problem
+      found "benign" in the wormhole spacetimes studied ·
+      <a href="https://authors.library.caltech.edu/records/aw0a8-ps286">CaltechAUTHORS</a> · verified</cite></blockquote>
+    <blockquote class="q">"A search is made for initial trajectories with zero multiplicity, and
+      none are found."
+      <cite>— Echeverria, Klinkhammer &amp; Thorne, PRD 44, 1077 (1991) — the billiard-ball
+      grandfather paradox: every initial condition searched had at least one self-consistent
+      solution (a search result, not a theorem — the paper is explicit) ·
+      <a href="https://authors.library.caltech.edu/records/x7s3m-f4d43">CaltechAUTHORS</a> · verified</cite></blockquote>
+    <blockquote class="q">"…closed timelike lines place no retrospective constraint on the state
+      of a quantum system."
+      <cite>— Deutsch, PRD 44, 3197 (1991), p. 3203 — fixed-point existence proved for every
+      circuit; his grandfather bit lands in "the maximally mixed state ½·1" ·
+      <a href="https://gwern.net/doc/science/physics/1991-deutsch.pdf">full text</a> · verified</cite></blockquote>
+    <p><b>Computed here (TM2):</b> in a bounded-deflection self-interaction model, a consistent
+    solution exists for <i>every</i> coupling scanned (a continuous map of a bounded interval into
+    itself must cross the diagonal — existence by topology, the same logic that guarantees
+    Deutsch's fixed points). <b>Computed here (TM3):</b> the noisy Deutsch grandfather map
+    contracts to its consistent state from every random start, at rate 0.85 per circuit.</p>
+    <figure class="figcard">{{FIG:tm2_roots}}
+      <figcaption><b>TM2 — consistency never fails to have a solution, then gains extras.</b>
+      Left: the consistency condition w = f(w) for three couplings κ. Right: number of consistent
+      solutions across the κ scan — minimum 1 everywhere, jumping to 3 above κ ≈ 0.58. Existence is
+      generic; <i>uniqueness</i> is what breaks.</figcaption></figure>
+    <figure class="figcard">{{FIG:tm3_qubit}}
+      <figcaption><b>TM3 — the grandfather paradox, solved and cancelled.</b> Left: Deutsch's
+      consistency map with mild decoherence pulls three random initial qubit states to the
+      consistent fixed point I/2 geometrically (trace distance, log scale) — consistency as an
+      <i>attractor</i>. The three curves overlie exactly: the contraction rate (0.85 per circuit)
+      is state-independent, which is the point. Right: the postselected-CTC weight cos²(θ/2) for a paradox of strength θ —
+      at the perfect grandfather (θ = π) the paradoxical branch's amplitude sums to exactly zero
+      (C6a).</figcaption></figure>
+  </section>
+
+  <section class="leaf" id="c3c">
+    <div class="leaf-head"><span class="leaf-id">C3c</span>
+      <span class="leaf-title">"The consistent solution is unique."</span></div>
+    <div class="chips"><span class="chip v-refuted">refuted</span><span class="chip e">E4 verified · E2 computed</span></div>
+    <p>Generically no — and this inverts the claim's picture of time travel's pathology. The
+    problem found in the literature and in our toys is not <i>too few</i> consistent histories but
+    <i>too many</i>: physics stops predicting which one occurs.</p>
+    <blockquote class="q">"…all dangerous initial trajectories in a wide class have infinite
+      multiplicity and thereby make the Cauchy problem ill posed in an unexpected way: 'far too
+      many solutions.'"
+      <cite>— Echeverria, Klinkhammer &amp; Thorne, PRD 44, 1077 (1991), abstract ·
+      <a href="https://authors.library.caltech.edu/records/x7s3m-f4d43">CaltechAUTHORS</a> · verified</cite></blockquote>
+    <p>Stronger than our pre-registered lean: we expected multiplicity; the source shows
+    <i>infinite</i> multiplicity for all "dangerous" data in a wide class. Deutsch handles his
+    model's non-uniqueness by fiat — a "maximum entropy rule" selecting the highest-entropy fixed
+    point (PRD 44, 3197, pp. 3204–05 · verified).</p>
+    <p>Optics analogy (same stationary-phase mathematics): where several stationary paths exist,
+    all are realized — a gravitational lens shows multiple images of one quasar. Multiple
+    consistent histories are the time-loop version of multiple images.</p>
+  </section>
+
+  <!-- ================================================================ C4 -->
+  <h2>Leg C4 — amplification: "mismatches are driven to ∞ or 0"</h2>
+
+  <section class="leaf" id="c4a">
+    <div class="leaf-head"><span class="leaf-id">C4a</span>
+      <span class="leaf-title">"Something traverses the loop unboundedly many times."</span></div>
+    <div class="chips"><span class="chip v-part">split</span><span class="chip e">E4 · verified literature</span></div>
+    <p>For travelers: no — a one-shot trip is one circuit. For <b>radiation</b>: yes — at the
+    moment a time machine would first form (the chronology horizon), closed light paths exist that
+    a wave can traverse unboundedly often, and vacuum fluctuations do exactly that. Kevin's
+    "infinite looping potential" is physically real — for field modes at the horizon, which is
+    precisely where the serious physics of C4b lives.</p>
+  </section>
+
+  <section class="leaf" id="c4b">
+    <div class="leaf-head"><span class="leaf-id">C4b</span>
+      <span class="leaf-title">"Per-circuit gain &gt; 1 drives the pile-up to ∞ and destroys the machine."</span></div>
+    <div class="chips"><span class="chip v-open">open — the frontier</span><span class="chip e">E4 · verified literature</span></div>
+    <p><b>This is Hawking's chronology protection conjecture — the original claim's mechanism,
+    rediscovered.</b> A wave exits the past mouth before it entered the future mouth, flies back,
+    re-enters: per circuit it gains (blueshift) and loses (defocusing). If the net gain exceeds 1,
+    the summed energy density diverges at the horizon and its gravity plausibly destroys the
+    machine at birth. Thirty-plus years of literature have sharpened but not settled it:</p>
+    <blockquote class="q">"…the vacuum-polarization divergence gets cut off by quantum gravity
+      upon reaching the tiny size l<sub>P</sub>/D, and spacetime remains macroscopically smooth
+      and classical and develops closed timelike curves without difficulty."
+      <cite>— Kim &amp; Thorne, PRD 43, 3929 (1991) — the divergence computed, then conjectured
+      harmless · <a href="https://inspirehep.net/api/doi/10.1103/PhysRevD.43.3929">INSPIRE</a> · verified</cite></blockquote>
+    <blockquote class="q">"It seems the back reaction would prevent closed timelike curves from
+      appearing… The laws of physics do not allow the appearance of closed timelike curves."
+      <cite>— Hawking, PRD 46, 603 (1992), abstract. §I, p. 603: "It seems there is a chronology
+      protection agency, which prevents the appearance of closed timelike curves and so makes the
+      universe safe for historians." (Exact wording — the common variant is a slight misquote.)
+      P. 610 adds the "hordes of tourists from the future" remark ·
+      <a href="http://reprints.gravitywaves.com/TimeTravel/Hawking-1991_ChronologyProtectionConjecture_PhysRevD.46.603.pdf">full text</a> · verified</cite></blockquote>
+    <blockquote class="q">"…quantities such as the renormalized expectation value of φ² or of the
+      stress-energy tensor are necessarily ill-defined or singular at any base point."
+      <cite>— Kay, Radzikowski &amp; Wald, Commun. Math. Phys. 183, 533 (1997) — rigorous
+      theorems: semiclassical gravity itself breaks down at compactly generated chronology
+      horizons · <a href="https://arxiv.org/abs/gr-qc/9603012">arXiv:gr-qc/9603012</a> · verified</cite></blockquote>
+    <p>Verified loopholes that keep the question open: Ori's machine forms around a compact
+    <i>vacuum</i> core with surrounding matter satisfying the weak, dominant, and strong energy
+    conditions — "Stability remains the main open question" (PRL 95, 021101 (2005) · verified);
+    Krasnikov exhibits quantum states with finite stress-energy up to the horizon (PRD 54, 7322
+    (1996) · reported via Visser's review) and separately proves classical GR can never
+    <i>force</i> a time machine to form (CQG 19, 4109 (2002) · verified). The field's own status
+    line:</p>
+    <blockquote class="q">"So, is chronology protected? Despite a decade's work we do not know for
+      certain… if chronology protection is the answer, we will have to wander deep into the guts
+      of quantum gravity to know for certain."
+      <cite>— Visser, "The quantum physics of chronology protection" (2002) ·
+      <a href="https://arxiv.org/abs/gr-qc/0204022">arXiv:gr-qc/0204022</a> · verified</cite></blockquote>
+    <figure class="figcard">{{FIG:tm4_horizon}}
+      <figcaption><b>TM4 — the whole dispute in one dial.</b> Accumulated energy after N circuits
+      at per-circuit gain g: bounded at g = 0.8 (sum → 5.0), linear at g = 1, geometric at g = 1.2
+      (8.8×10³ by N = 40 and climbing). Whether real wormhole geometries put g above or below 1 —
+      and whether quantum gravity caps the pile-up — is exactly the open question.</figcaption></figure>
+    <p><b>Status:</b> unresolved; the rigorous semiclassical result (KRW) shows the framework
+    itself breaks down at the horizon, escalating the verdict to quantum gravity. If protection
+    holds, the true conclusion is <i>stronger</i> than the claim: all macroscopic time machines
+    fail, not almost all.</p>
+  </section>
+
+  <section class="leaf" id="c4c">
+    <div class="leaf-head"><span class="leaf-id">C4c</span>
+      <span class="leaf-title">"Per-circuit gain &lt; 1 — mismatch 'driven to 0' — also makes time travel impossible."</span></div>
+    <div class="chips"><span class="chip v-refuted">refuted — the horn backfires</span><span class="chip e">E1 theorem · E2 computed</span></div>
+    <p>A loop map that damps mismatches is a <i>contraction</i>, and the Banach fixed-point theorem
+    then guarantees a unique consistent history that nearby candidates converge <i>toward</i>.
+    Damping doesn't delete histories; it deletes mismatches — making consistency stable,
+    self-enforcing, robust. The claim's own dichotomy contains a pro-time-travel branch, and the
+    quantum case sits on it: consistency-map dynamics are non-expansive, which is <i>why</i>
+    Deutsch fixed points exist (C3b, left panel).</p>
+    <figure class="figcard">{{FIG:tm1_loopmap}}
+      <figcaption><b>TM1 — the explicit counterexample.</b> Mismatch under iteration of the loop
+      map: contracting (|Λ| = 0.7) decays 0.5 → 6.7×10⁻⁵ in 25 circuits — a stable consistent
+      history, time travel unharmed; expanding (1.3) blows up 0.5 → 3.5×10²; marginal (1.0)
+      persists. "Driven to ∞ or 0" is real, but only the ∞ horn threatens the machine.</figcaption></figure>
+  </section>
+
+  <section class="leaf" id="c4d">
+    <div class="leaf-head"><span class="leaf-id">C4d</span>
+      <span class="leaf-title">"Marginal gain ≈ 1."</span></div>
+    <div class="chips"><span class="chip v-open">open</span><span class="chip e">E2 · computed (structure only)</span></div>
+    <p>The knife-edge case: mismatches neither die nor explode (TM1's flat line). Physically this
+    is where interference structure decides (see C6b); classifying which real geometries sit here
+    is future work — logged, not resolved.</p>
+  </section>
+
+  <!-- ================================================================ C5 -->
+  <h2>Leg C5 — measure: "almost all"</h2>
+
+  <section class="leaf" id="c5a">
+    <div class="leaf-head"><span class="leaf-id">C5a</span>
+      <span class="leaf-title">"Almost all" requires declaring a measure over something.</span></div>
+    <div class="chips"><span class="chip v-muted">repair adopted</span></div>
+    <p>"Almost all X are impossible" is mathematics only once you say which space X lives in and
+    which measure weighs it (over initial conditions? geometries? intervention strategies?). Every
+    C5 verdict below names its measure. Without this repair the phrase is rhetoric — with it, the
+    claim splits into one false version (C5b) and one defensible one (C5c).</p>
+  </section>
+
+  <section class="leaf" id="c5b">
+    <div class="leaf-head"><span class="leaf-id">C5b</span>
+      <span class="leaf-title">"With respect to natural measures on initial data, consistent solutions are measure-zero."</span></div>
+    <div class="chips"><span class="chip v-refuted">refuted in studied models</span><span class="chip e">E4 verified · E2 computed</span></div>
+    <p>In every system where the count has been done, the opposite holds: consistent solutions for
+    <i>all</i> initial data tried (measure one, not zero) — the billiard literature (C3b), the
+    quantum fixed-point theorem (C3b), and our TM2 scan (minimum solution count across the entire
+    coupling range: 1, never 0). What gets suppressed is not solutions existing but particular
+    naive stories — "I knock my earlier self fully off course, full stop" — which get replaced by
+    nearby consistent ones (glancing blows), typically several.</p>
+  </section>
+
+  <section class="leaf" id="c5c">
+    <div class="leaf-head"><span class="leaf-id">C5c</span>
+      <span class="leaf-title">"Histories with macroscopic pastward intervention are entropically suppressed — 'almost all,' in the fluctuation measure."</span></div>
+    <div class="chips"><span class="chip v-holds">holds in spirit</span><span class="chip e">E3 · derived + scaled</span></div>
+    <p>The defensible descendant of the claim's conclusion. A consistent history containing a
+    macroscopic, dissipative, remembering traveler must realize conspiratorial correlations — the
+    paradox-averting coincidences of Lewis's classic analysis. Fine-tuned macrostates carry an
+    entropy deficit ΔS, and fluctuation statistics price them at ~exp(−ΔS/k<sub>B</sub>),
+    compounding per circuit (C2a).</p>
+    <blockquote class="q">"Time travel, I maintain, is possible. The paradoxes of time travel are
+      oddities, not impossibilities… he somehow fails… For some commonplace reason. Perhaps some
+      noise distracts him at the last moment, perhaps he misses despite all his target practice,
+      perhaps his nerve fails…"
+      <cite>— David Lewis, "The Paradoxes of Time Travel," Am. Phil. Quarterly 13, 145 (1976) ·
+      <a href="https://home.sandiego.edu/~baber/metaphysics/readings/Lewis.ParadoxesOfTimeTravel.pdf">full text</a> ·
+      verified (the "banana peel" image often attached to this argument is a later gloss, not
+      Lewis's own)</cite></blockquote>
+    <div class="stat">
+      <div class="v">P ≲ 10<sup>−2.2×10²²</sup></div>
+      <div class="l">fluctuation price of ONE conspiratorially arranged gram, per pass</div>
+      <div class="s">5.0×10²² atoms × ~1 k<sub>B</sub> each — a deliberately conservative
+      scale-setter (TM5), not a bound from a specific spacetime. For comparison: the age of the
+      universe is ~10⁶¹ Planck times. Astronomically suppressed; never exactly zero.</div>
+    </div>
+  </section>
+
+  <!-- ================================================================ C6 -->
+  <h2>Leg C6 — cancellation: "non-matching paths are cancelled out"</h2>
+
+  <section class="leaf" id="c6a">
+    <div class="leaf-head"><span class="leaf-id">C6a</span>
+      <span class="leaf-title">Postselection version: mismatched branches are projected out (P-CTCs).</span></div>
+    <div class="chips"><span class="chip v-holds">holds in that framework</span><span class="chip e">E2 computed · E4 verified</span></div>
+    <p>In postselected closed timelike curves the loop is quantum teleportation postselected on
+    loop-output = loop-input: every branch that fails the match is removed and the survivors
+    renormalized — Kevin's sentence is close to the model's definition. Our TM3 computation shows
+    the flagship consequence exactly: the perfect grandfather's postselection weight is
+    cos²(π/2) = <b>0</b> — the paradoxical branch's amplitude cancels identically, and
+    near-paradoxes are smoothly suppressed (C3b figure, right panel). Known costs of the model:
+    nonlinearity, and outsized computational power.</p>
+    <blockquote class="q">"When the probability amplitude for the transition between these two
+      states is null, we postulate that the related event does not happen (so that the Novikov
+      principle is enforced)."
+      <cite>— Lloyd et al., PRD 84, 025007 (2011) — the renormalized P-CTC map
+      𝒩[ρ] = CρC†/Tr[CρC†] with C = Tr<sub>CTC</sub>[U]; photonic grandfather test in PRL 106,
+      040403 (2011) · <a href="https://arxiv.org/abs/1007.2615">arXiv:1007.2615</a> · verified</cite></blockquote>
+    <p>Computational price tags, verified with a corrected attribution: Deutsch CTCs make
+    classical and quantum computing both equal PSPACE (Aaronson &amp; Watrous, Proc. R. Soc. A
+    465, 631 (2009): "both would have the (extremely large) power of the complexity class
+    PSPACE"); the P-CTC = PP statement is Lloyd et al.'s, resting on Aaronson's 2005
+    PostBQP = PP — our ledger had pinned it on the wrong paper, now fixed and logged. A
+    Deutsch-CTC <i>simulation</i> has run on photons (Ringbauer et al., Nat. Commun. 5, 4145
+    (2014) · verified — "experimentally simulate," not a real CTC).</p>
+  </section>
+
+  <section class="leaf" id="c6b">
+    <div class="leaf-head"><span class="leaf-id">C6b</span>
+      <span class="leaf-title">Stationary-phase version: mismatched paths destructively interfere (sum over histories).</span></div>
+    <div class="chips"><span class="chip v-holds">holds as mechanism</span><span class="chip e">E2 computed · E4 verified</span></div>
+    <p>Kevin's second-day upgrade: import the principle behind "light takes all paths; only the
+    stationary one survives." Every loop configuration contributes amplitude e<sup>iS/ħ</sup>;
+    configurations that fail to match around the loop have rapidly spinning phases and cancel;
+    consistent ones sit at stationary action and dominate. No meta-time needed — the cancellation
+    happens once, timelessly, in the amplitude sum.</p>
+    <figure class="figcard">{{FIG:tm6_winding}}
+      <figcaption><b>TM6 — "paths with unequal energy cancel out," made literal.</b> Summing the
+      amplitudes of N windings around a loop with per-circuit energy-mismatch phase φ = ΔE·τ/ħ
+      gives a Dirichlet kernel: peak width shrinks 1.28 → 0.36 → 0.072 as windings go 5 → 20 → 100
+      (∝ 1/N). In the infinite-winding limit only ΔE = 0 survives — exact energy match, enforced by
+      interference. Same mathematics as a resonant cavity: which is both the vindication and the
+      caveat.</figcaption></figure>
+    <blockquote class="q">"…the only possible trajectories … minimizing the classical action are
+      those which are globally self-consistent, and … the 'Principle of self-consistency'
+      (originally introduced by Novikov) is thus a natural consequence of the 'Principle of
+      minimal action.'"
+      <cite>— Carlini, Frolov, Mensky, Novikov &amp; Soleng, Int. J. Mod. Phys. D 4, 557 (1995) ·
+      <a href="https://arxiv.org/abs/gr-qc/9506087">arXiv:gr-qc/9506087</a> · verified — Kevin's
+      instinct, published 31 years earlier; relativistic-particle follow-up: Carlini &amp; Novikov
+      (1996), <a href="https://arxiv.org/abs/gr-qc/9607063">gr-qc/9607063</a> · verified</cite></blockquote>
+    <p>The sum-over-histories treatments exist and carry a verified warning label: Politzer's path
+    integrals on CTC backgrounds find non-unitarity in some models and unitarity in others (PRD
+    46, 4470 (1992) · verified); Friedman–Papastamatiou–Simon prove "the unitarity relations are
+    not satisfied for interacting fields" (PRD 46, 4456 (1992) · verified); Hartle's generalized
+    quantum mechanics for nonchronal spacetimes rebuilds the formalism so probabilities stay
+    consistent while transition matrices "may be non-unitary" (PRD 49, 6543 (1994) · verified).
+    The mechanism is real; the resulting quantum theory pays for it.</p>
+  </section>
+
+  <!-- ================================================================ C7 -->
+  <h2 id="c7">C7 — the inference audit: does the conclusion follow?</h2>
+  <div class="chips"><span class="chip v-refuted">C0 does not follow as stated</span><span class="chip e">E3 · derived</span></div>
+
+  <p>Write the original conclusion as the logical function it needs:
+  <code>C0 ⇐ C3a ∧ (C4b ∧ C4c) ∧ C5b</code> — only exact matches allowed, <i>both</i>
+  amplification horns eliminate mismatched histories, and survivors are measure-zero. Scoring with
+  the leaf verdicts:</p>
+
+  <div class="scroll"><table>
+    <tr><th>Conjunct</th><th>Needed</th><th>Found</th><th>Survives?</th></tr>
+    <tr><td>C3a — exact-match rule</td><td>holds</td><td>holds in M1, with ħ tolerance</td><td><span class="ok">yes</span></td></tr>
+    <tr><td>C4b — expanding horn kills machines</td><td>holds universally</td><td>open (chronology protection, unresolved)</td><td>undecided</td></tr>
+    <tr><td>C4c — damping horn kills travel</td><td>holds</td><td><b>refuted</b> — contraction stabilizes consistency</td><td>no</td></tr>
+    <tr><td>C5b — survivors measure-zero</td><td>holds</td><td><b>refuted</b> in every studied model</td><td>no</td></tr>
+  </table></div>
+
+  <p>The chain breaks at two independent links, either of which is fatal to "almost all … is
+  impossible" as stated. The minimal rescue would require flipping both C4c and C5b — but C4c
+  fails by theorem (Banach) and C5b fails empirically in every model system anyone has counted.
+  A rescue therefore requires physics outside every studied framework. Meanwhile the claim's
+  <i>components</i> fare remarkably well, which is why the verdict splits into refined theses:</p>
+
+  <h3>What survives, conditional on framework and travel model</h3>
+  <div class="scroll"><table>
+    <tr><th>Setting</th><th>What holds</th><th>Relation to the original claim</th></tr>
+    <tr><td>Classical GR, one history (M1)</td><td><b>T2 Novikov</b>: only self-consistent histories occur; existence generic, uniqueness often lost</td><td>Adopts the exact-match clause; rejects "impossible" — you can visit, never change</td></tr>
+    <tr><td>Semiclassical gravity, M1</td><td><b>T1 chronology protection</b>: leaning yes, unresolved; semiclassical theory provably breaks down at the horizon</td><td>If true, <i>stronger</i> than the claim: all macroscopic machines fail</td></tr>
+    <tr><td>Quantum info — Deutsch CTCs</td><td>Consistency always solvable; paradoxes dissolve into mixed states</td><td>Against "almost all impossible"; consistency is cheap</td></tr>
+    <tr><td>Quantum info — postselected CTCs</td><td><b>C6a cancellation</b> exactly as claimed; paradoxes get weight 0</td><td>Vindicates the cancellation clause; only paradoxical branches die</td></tr>
+    <tr><td>Branching arrival (M2)</td><td>No constraint at all — books needn't balance across branches</td><td>The claim doesn't bite; M2 can't currently be excluded</td></tr>
+    <tr><td>Thermodynamic overlay (any)</td><td><b>T3 entropic suppression</b>: exp(−ΔS/k<sub>B</sub>) per conspiratorial gram, compounding per circuit</td><td>The defensible "almost all": all but an exponentially small measure</td></tr>
+  </table></div>
+
+  <h2 id="surprises">Movement against the pre-registered leans</h2>
+  <p><b>No pre-registered verdict lean flipped</b> — every leaf landed where the decomposition
+  pointed, and the primaries bore the leans out. What did move, all logged in the ledger's
+  changelog: the billiard multiplicity is <i>stronger</i> than leaned (infinite multiplicity for
+  all "dangerous" data in a wide class — "far too many solutions"); EKT's existence result is a
+  search finding, not a theorem ("none are found"); Lewis's "banana peel" is a later commentators'
+  gloss (his own list: a noise, a miss, failed nerve); Hawking's famous line is usually slightly
+  misquoted (exact wording above); the "P-CTCs = PP" attribution moved from Aaronson–Watrous to
+  Lloyd et al. — our error, found by verification and fixed; and the Devin preprint
+  (arXiv:1302.3298) turned out to be arXiv-only and Maxwell's-demon-focused — too weak to support
+  C2a, which now rests solely on our own derivation, honestly held at E3 pending an independent
+  source. This is what the verification pass is for.</p>
+
+  <h2 id="review">Review checklist — decisions that are yours</h2>
+  <ul class="checklist">
+    <li><input type="checkbox" id="r1"><label for="r1"><b>The steelman.</b> Does §"The claim under
+      test" still say what you meant? If any repair (dropping enthalpy, the M1/M2/M3 split)
+      changed your intent, flag it and we re-run the affected leaves.</label></li>
+    <li><input type="checkbox" id="r2"><label for="r2"><b>C2a's memory corollary.</b> The "you
+      can't remember completing a closed loop" step leans on Landauer's principle. Comfortable
+      treating that as settled physics here, or should it get its own verification pass?</label></li>
+    <li><input type="checkbox" id="r3"><label for="r3"><b>TM5's scale assumption.</b> 1
+      k<sub>B</sub> per atom for a conspiratorial gram is a deliberate lowball. Accept as a
+      scale-setter, or commission the full TM5 with a defended bound?</label></li>
+    <li><input type="checkbox" id="r4"><label for="r4"><b>Next deep dive.</b> The live frontier is
+      C4b (chronology protection). Options: close reading of the three key papers with a
+      structured disagreement map, or build the full TM2 billiard first. Which?</label></li>
+    <li><input type="checkbox" id="r5"><label for="r5"><b>Repo visibility.</b> ChronologyLab pushed
+      private. Flip to public like WhatsMyProfile?</label></li>
+  </ul>
+
+  <h2 id="limits">Limitations — read before trusting</h2>
+  <ul>
+    <li>All verdicts are <b>framework-conditional</b>; no experiment constrains any of this today.
+      Leaves C4b/C4d are open and honestly so — the field's own state.</li>
+    <li>The toys are <b>miniatures</b> built to settle structural questions (existence, stability,
+      cancellation) at E2. None simulates a real spacetime; each carries a pre-registered
+      can/cannot preamble in <code>toys/README.md</code>.</li>
+    <li>Literature quotes were verified by four research agents against primary/arXiv sources this
+      session; abstracts were the accessible text in several cases. Full-text page-level quotes
+      for the handful of paywalled papers remain a follow-up.</li>
+    <li>TM5's number is a <b>scale demonstration</b>, not a theorem — its job is to show what
+      "almost all" can mean, not to be defended to a referee.</li>
+  </ul>
+
+  <h2 id="refs">References — verification status</h2>
+  <ol class="refs">
+    <li>Gödel, "An Example of a New Type of Cosmological Solutions of Einstein's Field Equations of Gravitation," Rev. Mod. Phys. 21, 447 (1949). <span class="ok">verified</span> (<a href="https://kurtgoedel.de/cms-83FO/wp-content/uploads/2016/10/Goedel.pdf">scan</a>)</li>
+    <li>Lewis, "The Paradoxes of Time Travel," Am. Phil. Quarterly 13, 145 (1976). <span class="ok">verified</span> (<a href="https://home.sandiego.edu/~baber/metaphysics/readings/Lewis.ParadoxesOfTimeTravel.pdf">full text</a>)</li>
+    <li>Novikov, <i>Evolution of the Universe</i> (Cambridge Univ. Press, 1983), p. 169. reported — attribution via Friedman et al. (1990), ref. 10</li>
+    <li>Morris, Thorne &amp; Yurtsever, "Wormholes, Time Machines, and the Weak Energy Condition," PRL 61, 1446 (1988). <span class="ok">verified</span> (<a href="https://archive.org/details/pdfy-QMvPqoSMuObxQTRk">scan</a>)</li>
+    <li>Friedman, Morris, Novikov, Echeverria, Klinkhammer, Thorne &amp; Yurtsever, "Cauchy problem in spacetimes with closed timelike curves," PRD 42, 1915 (1990). <span class="ok">verified</span> (<a href="https://authors.library.caltech.edu/records/aw0a8-ps286">CaltechAUTHORS</a>)</li>
+    <li>Frolov &amp; Novikov, PRD 42, 1057 (1990). reported — cited as the mouth-mass mechanism source by Cramer et al. (1995)</li>
+    <li>Gott, "Closed timelike curves produced by pairs of moving cosmic strings," PRL 66, 1126 (1991). <span class="ok">verified</span> (<a href="https://pubmed.ncbi.nlm.nih.gov/10044002/">PubMed</a>)</li>
+    <li>Kim &amp; Thorne, "Do vacuum fluctuations prevent the creation of closed timelike curves?," PRD 43, 3929 (1991). <span class="ok">verified</span> (<a href="https://inspirehep.net/api/doi/10.1103/PhysRevD.43.3929">INSPIRE</a>)</li>
+    <li>Echeverria, Klinkhammer &amp; Thorne, "Billiard balls in wormhole spacetimes with closed timelike curves: Classical theory," PRD 44, 1077 (1991). <span class="ok">verified</span> (<a href="https://authors.library.caltech.edu/records/x7s3m-f4d43">CaltechAUTHORS</a>)</li>
+    <li>Deutsch, "Quantum mechanics near closed timelike lines," PRD 44, 3197 (1991). <span class="ok">verified</span> (<a href="https://gwern.net/doc/science/physics/1991-deutsch.pdf">full text</a>)</li>
+    <li>Hawking, "Chronology protection conjecture," PRD 46, 603 (1992). <span class="ok">verified</span> (<a href="http://reprints.gravitywaves.com/TimeTravel/Hawking-1991_ChronologyProtectionConjecture_PhysRevD.46.603.pdf">full text</a>)</li>
+    <li>Politzer, "Simple quantum systems in spacetimes with closed timelike curves," PRD 46, 4470 (1992), <a href="https://arxiv.org/abs/hep-th/9207076">hep-th/9207076</a>. <span class="ok">verified</span></li>
+    <li>Friedman, Papastamatiou &amp; Simon, "Failure of unitarity for interacting fields on spacetimes with closed timelike curves," PRD 46, 4456 (1992). <span class="ok">verified</span> (INSPIRE)</li>
+    <li>Hartle, "Unitarity and causality in generalized quantum mechanics for nonchronal spacetimes," PRD 49, 6543 (1994), <a href="https://arxiv.org/abs/gr-qc/9309012">gr-qc/9309012</a>. <span class="ok">verified</span></li>
+    <li>Cramer, Forward, Morris, Visser, Benford &amp; Landis, "Natural wormholes as gravitational lenses," PRD 51, 3117 (1995), <a href="https://arxiv.org/abs/astro-ph/9409051">astro-ph/9409051</a>. <span class="ok">verified</span></li>
+    <li>Ford &amp; Roman, "Averaged energy conditions and quantum inequalities," PRD 51, 4277 (1995), <a href="https://arxiv.org/abs/gr-qc/9410043">gr-qc/9410043</a>. <span class="ok">verified</span></li>
+    <li>Carlini, Frolov, Mensky, Novikov &amp; Soleng, "Time machines: the Principle of Self-Consistency as a consequence of the Principle of Minimal Action," IJMPD 4, 557 (1995); erratum D5, 99 (1996), <a href="https://arxiv.org/abs/gr-qc/9506087">gr-qc/9506087</a>. <span class="ok">verified</span></li>
+    <li>Visser, <i>Lorentzian Wormholes: From Einstein to Hawking</i> (AIP Press, 1995). existence <span class="ok">verified</span>; page-level claims not directly checked</li>
+    <li>Ford &amp; Roman, "Quantum field theory constrains traversable wormhole geometries," PRD 53, 5496 (1996), <a href="https://arxiv.org/abs/gr-qc/9510071">gr-qc/9510071</a>. <span class="ok">verified</span></li>
+    <li>Krasnikov, "On the quantum stability of the time machine," PRD 54, 7322 (1996). reported via Visser (2002)</li>
+    <li>Carlini &amp; Novikov, "…Principle of Stationary Action (II)," IJMPD 5, 445 (1996), <a href="https://arxiv.org/abs/gr-qc/9607063">gr-qc/9607063</a>. <span class="ok">verified</span></li>
+    <li>Kay, Radzikowski &amp; Wald, "Quantum field theory on spacetimes with a compactly generated Cauchy horizon," Commun. Math. Phys. 183, 533 (1997), <a href="https://arxiv.org/abs/gr-qc/9603012">gr-qc/9603012</a>. <span class="ok">verified</span></li>
+    <li>Krasnikov, "No time machines in classical general relativity," CQG 19, 4109 (2002), <a href="https://arxiv.org/abs/gr-qc/0111054">gr-qc/0111054</a>. <span class="ok">verified</span></li>
+    <li>Visser, "The quantum physics of chronology protection," <a href="https://arxiv.org/abs/gr-qc/0204022">gr-qc/0204022</a> (2002). <span class="ok">verified</span></li>
+    <li>Ori, "A Class of Time-Machine Solutions with a Compact Vacuum Core," PRL 95, 021101 (2005), <a href="https://arxiv.org/abs/gr-qc/0503077">gr-qc/0503077</a>. <span class="ok">verified</span></li>
+    <li>Aaronson, "Quantum computing, postselection, and probabilistic polynomial-time," Proc. R. Soc. A 461, 3473 (2005). <span class="ok">verified</span> (Crossref)</li>
+    <li>Aaronson &amp; Watrous, "Closed timelike curves make quantum and classical computing equivalent," Proc. R. Soc. A 465, 631 (2009), <a href="https://arxiv.org/abs/0808.2669">arXiv:0808.2669</a>. <span class="ok">verified</span></li>
+    <li>Carroll, "Energy Is Not Conserved" (2010). <span class="ok">verified</span> (<a href="https://www.preposterousuniverse.com/blog/2010/02/22/energy-is-not-conserved/">blog</a>) · Weiss &amp; Baez, "Is Energy Conserved in General Relativity?" <span class="ok">verified</span> (<a href="https://math.ucr.edu/home/baez/physics/Relativity/GR/energy_gr.html">physics FAQ</a>) · Jaramillo &amp; Gourgoulhon, <a href="https://arxiv.org/abs/1001.5429">arXiv:1001.5429</a>. <span class="ok">verified</span></li>
+    <li>Lloyd et al., "Closed Timelike Curves via Postselection: Theory and Experimental Test of Consistency," PRL 106, 040403 (2011), <a href="https://arxiv.org/abs/1005.2219">arXiv:1005.2219</a>; and "The quantum mechanics of time travel through post-selected teleportation," PRD 84, 025007 (2011), <a href="https://arxiv.org/abs/1007.2615">arXiv:1007.2615</a>. <span class="ok">verified</span></li>
+    <li>Devin, "Thermodynamics of Time Machines," <a href="https://arxiv.org/abs/1302.3298">arXiv:1302.3298</a> (2013). <span class="ok">verified as arXiv-only preprint</span> — cited narrowly (Maxwell's-demon analysis); does not carry C2a</li>
+    <li>Ringbauer, Broome, Myers, White &amp; Ralph, "Experimental simulation of closed timelike curves," Nat. Commun. 5, 4145 (2014). <span class="ok">verified</span> (<a href="https://www.nature.com/articles/ncomms5145">Nature</a>)</li>
+  </ol>
+
+  <div class="colophon">
+    <p>Chronology Lab · Report I · produced 2026-07-26 by Claude (Fable 5) with Kevin Schmidt.
+    Claim frozen 2026-07-26; leans pre-registered before evidence; citation verification by four
+    parallel research agents; computations: <code>toys/run_all.py</code> (numpy/matplotlib via uv),
+    outputs committed in <code>toys/out/</code>. Ledger and changelog: <code>docs/CLAIMS.md</code>.
+    Figures render in light and dark; palette validated for color-vision-deficiency separation in
+    both modes.</p>
+  </div>
+
+</div>

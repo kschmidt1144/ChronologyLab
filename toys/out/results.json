@@ -1,0 +1,46 @@
+{
+  "tm1": {
+    "deviation_after_25_iter": {
+      "0.7": 6.705343098319814e-05,
+      "1.3": 352.82050074334114,
+      "1.0": 0.5
+    },
+    "finding": "contraction => unique stable consistent history (Banach); expansion => blow-up; dichotomy incomplete as impossibility argument"
+  },
+  "tm2": {
+    "min_solutions_over_scan": 1,
+    "max_solutions_over_scan": 3,
+    "multiplicity_onset_kappa": 0.5825,
+    "finding": "existence never fails (min 1 root across full scan; bounded continuous self-map => fixed point); uniqueness fails above a coupling threshold"
+  },
+  "tm3": {
+    "deutsch_fixed_point": "I/2 (maximally mixed), unique attractor once eps>0 decoherence added",
+    "contraction_factor_per_iter": 0.85,
+    "pctc_weight_at_full_paradox": 0.0,
+    "pctc_weight_formula": "cos^2(theta/2) = |Tr U|^2 / 4 for U = Rx(theta)",
+    "finding": "Deutsch consistency always solvable (grandfather -> mixed state); P-CTC literally cancels the paradoxical branch (weight exactly 0)"
+  },
+  "tm4": {
+    "sum_at_N40": {
+      "0.8": 4.999468308801688,
+      "1.0": 41.0,
+      "1.2": 8813.629407814507
+    },
+    "finding": "whether the machine self-destroys is exactly the question g >= 1 or < 1 per circuit \u2014 the Kim-Thorne vs Hawking dispute in one dial"
+  },
+  "tm6": {
+    "fwhm_by_windings": {
+      "5": 1.2754866173574562,
+      "20": 0.3612831551628264,
+      "100": 0.07225663103256519
+    },
+    "finding": "summing over loop windings is a Dirichlet kernel: weight concentrates on exact energy match as windings grow \u2014 the claim's cancellation mechanism, realized as interference (same math as a resonant cavity)"
+  },
+  "tm5": {
+    "atoms_per_gram_carbon": 5.013854599950046e+22,
+    "dS_over_kB_per_gram": 5.013854599950046e+22,
+    "log10_suppression_per_gram_per_pass": -2.1774893858235408e+22,
+    "planck_times_age_of_universe_log10": 61,
+    "finding": "a 1 k_B-per-atom conspiratorial arrangement of ONE GRAM costs P ~ 10^(-2.2e22): 'almost all' in the fluctuation measure, but never exactly 0"
+  }
+}
