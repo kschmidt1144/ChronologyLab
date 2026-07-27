@@ -1,0 +1,422 @@
+{
+  "project": "chronologylab",
+  "updated": "2026-07-26",
+  "tiers": [
+    "T0 · Foundations",
+    "T1 · Statistical mechanics",
+    "T2 · Dynamics & fluctuations",
+    "T3 · Quantum minimum",
+    "T4 · Time loops & the results"
+  ],
+  "concepts": [
+    {
+      "id": "probability-basics",
+      "name": "Probability & distributions",
+      "tier": 0,
+      "plain": "A distribution assigns each possible outcome a number between 0 and 1, and the numbers add up to 1. Everything else in this map is bookkeeping on top of that one idea.",
+      "example": "A loaded die: P(6) = 0.5, P(1..5) = 0.1 each. The six numbers sum to 1.",
+      "formal": "A probability distribution on a finite set X is p: X → [0,1] with Σₓ p(x) = 1. Events are subsets; P(A) = Σ_{x∈A} p(x).",
+      "prereqs": [],
+      "where": ["Report II §3"],
+      "test": [
+        "I have three outcomes with P = 0.5 and 0.3. What's the third, and how do you know?",
+        "What's the difference between an outcome and an event?"
+      ]
+    },
+    {
+      "id": "expectation",
+      "name": "Expectation (weighted averages)",
+      "tier": 0,
+      "plain": "The expectation is the average you'd get from many repeats: each outcome's value, weighted by its probability. Angle brackets ⟨·⟩ in the reports always mean this.",
+      "example": "Loaded die above: ⟨roll⟩ = 0.5·6 + 0.1·(1+2+3+4+5) = 4.5.",
+      "formal": "⟨f⟩ = Σₓ p(x) f(x). Linearity: ⟨af+bg⟩ = a⟨f⟩ + b⟨g⟩, always, even for dependent quantities.",
+      "prereqs": ["probability-basics"],
+      "where": ["Report II §4, T2's ⟨e^{−s}⟩ = 1"],
+      "test": [
+        "A coin pays $10 heads, −$4 tails, fair coin. Expected value?",
+        "In Report II we write ⟨e^{−s/k_B}⟩ = 1. In words, what is being averaged, weighted by what?"
+      ]
+    },
+    {
+      "id": "exponentials",
+      "name": "Exponentials & logarithms",
+      "tier": 0,
+      "plain": "e^x grows (or decays) multiplicatively: equal steps in x multiply the result by equal factors. Logs undo that. Physics of rare events lives entirely on this scale — 10^(−10²²) is not 'small', it is a different universe of small.",
+      "example": "e^−1 ≈ 0.37, e^−3 ≈ 0.05, e^−6 ≈ 0.0025 — each extra 1 in the exponent costs a factor ~2.7. Doubling a suppression exponent squares the suppression.",
+      "formal": "e^{a+b} = e^a e^b; ln(xy) = ln x + ln y; d/dt e^{−λt} = −λ e^{−λt} — decay proportional to what remains.",
+      "prereqs": [],
+      "where": ["Report II throughout — every price is an exponential"],
+      "test": [
+        "Why does adding costs in an exponent multiply probabilities?",
+        "Roughly what is e^−10, as a power of ten?"
+      ]
+    },
+    {
+      "id": "micro-macro",
+      "name": "Microstates vs macrostates",
+      "tier": 0,
+      "plain": "A microstate is the complete exact configuration (every particle's position); a macrostate is the coarse description you actually observe (temperature, 'the coffee is mixed'). Many microstates look like the same macrostate — counting how many is the seed of entropy.",
+      "example": "100 coins: the macrostate 'exactly 50 heads' contains ~10²⁹ microstates; the macrostate 'all heads' contains exactly 1.",
+      "formal": "A macrostate M is an equivalence class of microstates under a coarse-graining map; its weight is W(M) = |{x : x ∈ M}| (or its measure).",
+      "prereqs": ["probability-basics"],
+      "where": ["Report II §3-4; Report I C2a"],
+      "test": [
+        "Why is 'all heads' astronomically less likely than 'about half heads' even though every individual coin sequence is equally likely?",
+        "Give a macrostate and two distinct microstates inside it, for anything you like."
+      ]
+    },
+    {
+      "id": "entropy-counting",
+      "name": "Entropy as counting",
+      "tier": 1,
+      "plain": "Entropy measures how many microstates a macrostate contains: S = k_B ln W. Big entropy = generic, unremarkable configurations; low entropy = special, rare ones. 'Disorder' is a nickname; counting is the definition.",
+      "example": "The 100-coin 'half heads' macrostate has S ≈ k_B ln(10²⁹) ≈ 67 k_B; 'all heads' has S = 0. That 67 k_B gap is why you never see all-heads by chance.",
+      "formal": "S(M) = k_B ln W(M). Extensive: for independent parts, W multiplies so S adds.",
+      "prereqs": ["micro-macro", "exponentials"],
+      "where": ["Report II §4 T1 macrostate form; Report I C2"],
+      "test": [
+        "Why does entropy ADD for independent systems when microstate counts MULTIPLY?",
+        "What does an entropy deficit ΔS = 6 k_B mean in terms of counting?"
+      ]
+    },
+    {
+      "id": "boltzmann-weight",
+      "name": "The Boltzmann weight",
+      "tier": 1,
+      "plain": "At temperature T, a state costing energy E is occupied with probability proportional to e^(−E/k_BT): every k_BT of extra energy costs a factor of e ≈ 2.7 in probability. This one formula is the price list of thermal physics — and of Report II.",
+      "example": "A state 3 k_BT above the ground state is e^−3 ≈ 20× less likely. Air molecules 'pay' gravitational energy this way, which is why the atmosphere thins exponentially with altitude.",
+      "formal": "π(x) = e^{−E_x/k_BT} / Z with Z = Σ_y e^{−E_y/k_BT}. Ratios are pure: π(x)/π(y) = e^{−(E_x−E_y)/k_BT}.",
+      "prereqs": ["probability-basics", "exponentials"],
+      "widget": "closure-cost",
+      "where": ["Report II §4 Theorem 1"],
+      "test": [
+        "Two states differ by 2 k_BT. What's their probability ratio, roughly?",
+        "Why do probability RATIOS not care about the normalization Z?"
+      ]
+    },
+    {
+      "id": "free-energy",
+      "name": "Free energy F = E − TS",
+      "tier": 1,
+      "plain": "Free energy scores a macrostate by combining its energy cost and its entropy credit: nature at temperature T favors low F, not low E. It's the single number that says how hard a configuration is to keep in existence.",
+      "example": "Liquid vs vapor: vapor has higher energy but vastly higher entropy; above 100 °C the −TS term wins and water boils. Same competition, one number.",
+      "formal": "F_M = E_M − T S_M; equilibrium probability of a macrostate: π(M) = e^{−(F_M − F_eq)/k_BT}. For equal energies this reduces to the Einstein weight e^{(S_M − S_eq)/k_B}.",
+      "prereqs": ["entropy-counting", "boltzmann-weight"],
+      "where": ["Report II §4 T1 and Corollary 3"],
+      "test": [
+        "Why can a HIGH-energy macrostate still be the likely one at high temperature?",
+        "In Report II, what plays the role of 'the thing the loop must pay for', in free-energy terms?"
+      ]
+    },
+    {
+      "id": "equilibrium-relaxation",
+      "name": "Equilibrium & relaxation time",
+      "tier": 1,
+      "plain": "Left alone, a system forgets its starting point and settles into equilibrium; the relaxation (mixing) time is how long the forgetting takes. Before that time, history matters; after it, only the Boltzmann weights do.",
+      "example": "Cream poured in coffee: for a second there's structure (memory of the pour); a few swirls later any cup looks like any other — equilibrium.",
+      "formal": "Distance to the stationary distribution decays like e^{−t/t_relax} (spectral gap sets t_relax). 'Short times remember, long times don't' is Report II's cheap-hops-vs-full-price dial.",
+      "prereqs": ["boltzmann-weight"],
+      "where": ["Report II §4 Theorem 1, E1 figure"],
+      "test": [
+        "What does a system 'forget' during relaxation, and what single distribution describes it afterward?",
+        "Why are short time-loops thermodynamically cheap in Report II?"
+      ]
+    },
+    {
+      "id": "fluctuations",
+      "name": "Fluctuations & the Einstein weight",
+      "tier": 1,
+      "plain": "Equilibrium isn't frozen — the system constantly wanders, and occasionally wanders somewhere special. The chance of finding it in a low-entropy macrostate is e^(ΔS deficit/k_B)-small: rare excursions have exponential price tags, never zero.",
+      "example": "All the air rushing to one half of the room is ALLOWED — at probability ~e^(−10²³), you'd wait far beyond the age of the universe.",
+      "formal": "P(M) ~ e^{(S_M − S_eq)/k_B} (Einstein fluctuation formula) — the equilibrium measure of the macrostate.",
+      "prereqs": ["entropy-counting", "boltzmann-weight"],
+      "where": ["Report II §4 T1; Report I C2a/C5c"],
+      "test": [
+        "Why is 'astronomically improbable' the honest phrase instead of 'impossible' for entropy-decreasing events?",
+        "What sets the exponent in a fluctuation's price?"
+      ]
+    },
+    {
+      "id": "markov-chains",
+      "name": "Markov chains",
+      "tier": 2,
+      "plain": "A system hops between states with fixed probabilities that depend only on where it is now — no memory of the route. That memorylessness is what makes the math exact, and it's the model class every Report II theorem lives in.",
+      "example": "Weather toy: sunny→sunny 0.8, sunny→rain 0.2, rain→sunny 0.5, rain→rain 0.5. Tomorrow depends on today, not on last week.",
+      "formal": "P(x_{t+1} = y | history) = P(x_{t+1} = y | x_t) = W(x_t → y); rows of the transition matrix sum to 1.",
+      "prereqs": ["probability-basics"],
+      "where": ["Report II §3"],
+      "test": [
+        "What exactly does the Markov (memoryless) property forbid?",
+        "In the weather toy, what's P(rain in two days | sunny today)? Walk the two paths."
+      ]
+    },
+    {
+      "id": "stationary-distribution",
+      "name": "Stationary distribution π",
+      "tier": 2,
+      "plain": "Run a Markov chain long enough and the fraction of time spent in each state settles to fixed numbers: the stationary distribution. It's the chain's version of equilibrium — and for physical chains it IS the Boltzmann distribution.",
+      "example": "The weather toy settles to 5/7 sunny, 2/7 rain no matter how it starts (check: 5/7·0.2 flowing out of sunny = 2/7·0.5 flowing in).",
+      "formal": "π is stationary iff Σₓ π(x) W(x→y) = π(y) for all y — inflow equals outflow, nothing changes.",
+      "prereqs": ["markov-chains", "equilibrium-relaxation"],
+      "where": ["Report II §4 Theorem 1"],
+      "test": [
+        "State the balance condition in words ('for every state, ... equals ...').",
+        "Why doesn't the starting state matter after long times (for a well-behaved chain)?"
+      ]
+    },
+    {
+      "id": "detailed-balance",
+      "name": "Detailed balance",
+      "tier": 2,
+      "plain": "Equilibrium chains balance traffic pair by pair: the flow x→y equals the flow y→x for EVERY pair, not just in total. The rate ratio between two states is then exactly their Boltzmann ratio — dynamics and thermodynamics locked together.",
+      "example": "A bathtub with equal water exchanged both ways between every pair of regions: globally still, microscopically busy.",
+      "formal": "π(x)W(x→y) = π(y)W(y→x), equivalently W(x→y)/W(y→x) = e^{−(E_y−E_x)/k_BT} (local detailed balance, one bath).",
+      "prereqs": ["stationary-distribution", "boltzmann-weight"],
+      "where": ["Report II §3 (the declared model class)"],
+      "test": [
+        "How is detailed balance STRONGER than stationarity?",
+        "If E_y − E_x = 2 k_BT, what is the up-rate over the down-rate?"
+      ]
+    },
+    {
+      "id": "return-probability",
+      "name": "Return probability & mixing",
+      "tier": 2,
+      "plain": "Start a chain in state x: the chance of finding it back at x after time τ starts at 1, then decays as the chain forgets, and levels off at π(x) — you can always 'return' by pure chance at the equilibrium rate. This curve IS Report II's closure cost.",
+      "example": "The E1 figure: R_τ slides monotonically from 1 down to the Boltzmann floor e^−ΔS as τ passes the relaxation time.",
+      "formal": "R_τ(x) = P(x(τ)=x | x(0)=x) = π(x) + Σ_{k≥2} e^{−λ_k τ} φ_k(x)² π(x) ≥ π(x), monotone ↓ for reversible chains.",
+      "prereqs": ["stationary-distribution"],
+      "widget": "closure-cost",
+      "where": ["Report II §4 Theorem 1 + E1 figure"],
+      "test": [
+        "Why is R_τ(x) ≥ π(x) always (for reversible chains) — what would be weird if it dipped below?",
+        "What two regimes does the relaxation time separate, and what does each cost?"
+      ]
+    },
+    {
+      "id": "entropy-production",
+      "name": "Entropy production along a path",
+      "tier": 2,
+      "plain": "Each jump a system makes either dumps heat into the bath or absorbs heat from it; adding the (log of the) rate-ratios along a whole trajectory gives that path's total entropy production. It's a property of the JOURNEY, not the endpoints — except in equilibrium, where it telescopes to exactly the endpoint energy difference.",
+      "example": "Downhill jump (E drops 2 k_BT): +2 k_B produced. The reverse uphill jump: −2 k_B. A round trip in an undriven system: exactly 0 — which is Report II's T2a.",
+      "formal": "s(γ) = k_B Σᵢ ln[W(xᵢ→xᵢ₊₁)/W(xᵢ₊₁→xᵢ)]; with local detailed balance each term is −(ΔE)/T, so the sum telescopes to (E_start − E_end)/T for undriven chains.",
+      "prereqs": ["detailed-balance", "entropy-counting"],
+      "where": ["Report II §3 and §4 Theorem 2"],
+      "test": [
+        "Why does entropy production telescope in an UNDRIVEN chain, and what kills the telescoping when you add driving?",
+        "What is s for any closed trajectory in an undriven chain — and why is that Report II's T2a?"
+      ]
+    },
+    {
+      "id": "fluctuation-theorems",
+      "name": "Fluctuation theorems",
+      "tier": 2,
+      "plain": "The modern second law is an exact symmetry, not an inequality: a trajectory is e^(s/k_B) times more likely than its exact time-reverse. Entropy-consuming histories aren't forbidden — they're exponentially outvoted. Averages of e^(−s) come out exactly 1.",
+      "example": "Report II's E2: across all 6,561 periodic paths of a driven ring, every bin satisfied P(s)/P(−s) = e^s to 14 decimal places — no fitting, pure theorem.",
+      "formal": "P[γ]/P[γ̃] = e^{s(γ)/k_B} (detailed FT); hence ⟨e^{−s/k_B}⟩ = 1 (integral FT) and P(s ≤ −σ) ≤ e^{−σ/k_B}; ⟨s⟩ ≥ 0 by Jensen.",
+      "prereqs": ["entropy-production", "fluctuations", "expectation"],
+      "where": ["Report II §4 Theorem 2b + E2 figure"],
+      "test": [
+        "How does ⟨e^{−s}⟩ = 1 IMPLY the second law ⟨s⟩ ≥ 0? (One inequality's name suffices.)",
+        "In what precise sense can entropy 'decrease' under a fluctuation theorem?"
+      ]
+    },
+    {
+      "id": "driving-affinity",
+      "name": "Driving & affinity",
+      "tier": 2,
+      "plain": "Push a system in a cycle — a stirred ring, a chemical gradient — and detailed balance breaks: going around the loop one way is systematically favored, and each lap produces entropy proportional to the push. Undriven vs driven is the switch between Report II's T2a (exactly zero) and T2b (fluctuation theorem).",
+      "example": "The E2 driven ring: forward hop probability 0.40, backward 0.40·e^−1.5 — each net lap produces 3 × 1.5 k_B.",
+      "formal": "Affinity per cycle A = k_B Σ_cycle ln(W_forward/W_backward) ≠ 0 defines a nonequilibrium steady state; s of a periodic path = A × (windings).",
+      "prereqs": ["detailed-balance"],
+      "where": ["Report II §4 T2b"],
+      "test": [
+        "Why can't any assignment of energies E_x produce a driven ring's rates?",
+        "For the E2 ring, what values can s take on periodic paths, and why those?"
+      ]
+    },
+    {
+      "id": "amplitudes-interference",
+      "name": "Amplitudes & interference",
+      "tier": 3,
+      "plain": "Quantum mechanics assigns each path a spinning arrow (a complex amplitude), and you ADD arrows before squaring to get probability. Aligned arrows reinforce; misaligned arrows cancel — that cancellation is the entire mechanism of Report I's C6b and the TM6 figure.",
+      "example": "TM6: summing arrows over loop windings, mismatched-energy paths point every which way and cancel; only exact energy match survives as windings grow.",
+      "formal": "P = |Σ_paths A_path|², A_path = e^{iS_path/ħ}. Stationary-phase: bundles with δS = 0 add coherently; others cancel.",
+      "prereqs": ["probability-basics", "exponentials"],
+      "where": ["Report I C6b + TM6 figure"],
+      "test": [
+        "Why can adding MORE paths make an outcome LESS likely in quantum mechanics?",
+        "What made the winding-sum in TM6 concentrate onto ΔE = 0?"
+      ]
+    },
+    {
+      "id": "density-matrix",
+      "name": "Density matrices (mixed states)",
+      "tier": 3,
+      "plain": "A density matrix describes a quantum system you're uncertain about — part quantum superposition, part ordinary ignorance — in one object ρ. 'Maximally mixed' (I/2 for a qubit) means a fair coin about everything: it's how Deutsch's model resolves the grandfather bit.",
+      "example": "Deutsch's grandfather qubit lands in ½·1: the values 0 and 1 'occur with equal weight' — his exact resolution of the paradox.",
+      "formal": "ρ is positive semidefinite with Tr ρ = 1; pure states are ρ = |ψ⟩⟨ψ|; expectation ⟨A⟩ = Tr(ρA); entropy S(ρ) = −Tr ρ ln ρ.",
+      "prereqs": ["amplitudes-interference", "probability-basics"],
+      "where": ["Report II §4 R5; Report I C3b (Deutsch quote)"],
+      "test": [
+        "What's the physical difference between a 50/50 superposition and a 50/50 mixture?",
+        "Why does Deutsch's model NEED mixed states to solve the grandfather paradox?"
+      ]
+    },
+    {
+      "id": "channels-maps",
+      "name": "Quantum channels (maps)",
+      "tier": 3,
+      "plain": "A channel is any physically allowed transformation of a density matrix — unitary evolution, adding noise, coupling to an environment and forgetting it. Report II's loop dynamics Φ is a channel; iterating it asks 'what does the loop do to a state, again and again?'",
+      "example": "E4's partial-swap channel: mix the qubit a bit with a fresh thermal qubit each pass — iterate and any state drifts to thermal.",
+      "formal": "Φ(ρ) = Tr_env[U(ρ_env ⊗ ρ)U†] (Stinespring form); completely positive, trace-preserving; non-expansive in trace distance.",
+      "prereqs": ["density-matrix"],
+      "where": ["Report II §4 R5 + E4 figure"],
+      "test": [
+        "Why must a channel keep Tr ρ = 1?",
+        "In E4, what physical story does 'partial swap with a fresh thermal qubit' tell?"
+      ]
+    },
+    {
+      "id": "fixed-points",
+      "name": "Fixed points & attractors",
+      "tier": 3,
+      "plain": "A fixed point of a map is an input the map returns unchanged: F(x) = x. If the map shrinks distances, iteration spirals INTO the fixed point — consistency becomes an attractor rather than a fine-tuned coincidence. This one idea runs through Novikov, Deutsch, and TM1.",
+      "example": "Press cos on a calculator repeatedly from any start: it converges to 0.739… — the fixed point of cos. TM1's contracting loop map does exactly this with histories.",
+      "formal": "x* with F(x*) = x*; if d(F(x),F(y)) ≤ q·d(x,y) with q < 1 (contraction), a unique fixed point exists and iteration converges to it (Banach).",
+      "prereqs": ["markov-chains"],
+      "where": ["Report I C3a/C4c + TM1; Report II §4 R5 left panel"],
+      "test": [
+        "Why does a CONTRACTING loop map make time travel MORE robust, not less?",
+        "What goes wrong with the 'any mismatch kills the history' argument at a fixed point of a contraction?"
+      ]
+    },
+    {
+      "id": "pointer-records",
+      "name": "Pointer states, decoherence & records",
+      "tier": 3,
+      "plain": "The environment constantly 'measures' quantum systems, killing superpositions between the states it can distinguish — the survivors are pointer states, the stuff classical records and memories are made of. A record is physics, not philosophy: a stable, copyable pointer configuration.",
+      "example": "A dust grain 'here' vs 'there': photons bouncing off it record its position billions of times per second — superpositions of here+there die instantly; 'here' survives. Your memory of reading this sentence is such a record.",
+      "formal": "Decoherence suppresses off-diagonal terms of ρ in the pointer basis selected by the interaction; dephasing D(ρ) keeps the diagonal. Records require irreversibility (Landauer: erasure costs ≥ k_BT ln 2).",
+      "prereqs": ["density-matrix"],
+      "where": ["Report II §4 R5; Report I C2a corollary"],
+      "test": [
+        "What selects WHICH basis becomes the pointer basis?",
+        "Why does 'making a record' necessarily touch thermodynamics?"
+      ]
+    },
+    {
+      "id": "ctc-block",
+      "name": "CTCs & the block universe",
+      "tier": 4,
+      "plain": "In relativity, past/present/future form one 4-D block; a closed timelike curve (CTC) is a worldline in that block that loops back into its own past. There's no 'changing' anything — the loop simply IS part of the one history, which is why the three travel models (M1 one history / M2 branching / M3 rewriting) matter so much.",
+      "example": "Report I's key line: there is no 'original 2026 without the traveler' — the only 2026 that exists already includes the consequences of the 1926 arrival.",
+      "formal": "A CTC is a closed curve with everywhere-timelike tangent; GR admits solutions containing them (Gödel 1949; wormhole time machines, Morris–Thorne–Yurtsever 1988), all requiring exotic conditions.",
+      "prereqs": [],
+      "where": ["Report I §'The claim under test' + C1"],
+      "test": [
+        "Why does M1 (single history) make the question 'did the returned state match the original?' vacuous?",
+        "What extra ingredient does the M3 'rewrite the timeline' picture secretly require?"
+      ]
+    },
+    {
+      "id": "novikov-fixedpoint",
+      "name": "Novikov consistency = fixed point",
+      "tier": 4,
+      "plain": "The Novikov principle says the only histories that occur on a loop are globally self-consistent ones — and formally that's a fixed-point equation: run the state around the loop, demand you get the same state back. Existence turned out to be generic (many solutions!), which is what killed the original claim's 'measure-zero' clause.",
+      "example": "The billiard-ball 'grandfather paradox': every initial condition searched had at least one consistent solution — usually a glancing blow instead of a clean knockout — and 'dangerous' ones had infinitely many.",
+      "formal": "Consistency: F(x*) = x* for the loop map F = evolve ∘ jump. EKT 1991: zero-multiplicity data — none found; infinite multiplicity — generic for dangerous data.",
+      "prereqs": ["ctc-block", "fixed-points"],
+      "where": ["Report I C3a/C3b + TM2 figure"],
+      "test": [
+        "State the Novikov principle as an equation, naming what F does.",
+        "What is the ACTUAL pathology of classical time travel per EKT — too few consistent histories, or too many?"
+      ]
+    },
+    {
+      "id": "deutsch-consistency",
+      "name": "Deutsch consistency (D-CTCs)",
+      "tier": 4,
+      "plain": "Deutsch demanded consistency only of the quantum STATE: the density matrix entering the loop must equal the one leaving, ρ = Φ(ρ). A fixed point always exists — the grandfather paradox dissolves into a mixed state — so quantum consistency is free of charge. That freeness is half of Report II's R5.",
+      "example": "E4 left panel: from any random qubit state, iterating the loop channel converges to a consistent ρ at every coupling tested — no obstruction, ever.",
+      "formal": "ρ* = Tr_CR[U(ρ_in ⊗ ρ*)U†]; existence for every circuit by fixed-point theorem (compact convex set, continuous map); non-uniqueness resolved by Deutsch's maximum-entropy rule.",
+      "prereqs": ["novikov-fixedpoint", "channels-maps"],
+      "where": ["Report II §4 R5; Report I C3b"],
+      "test": [
+        "Why is Deutsch's consistency ALWAYS satisfiable when trajectory-level consistency isn't?",
+        "What does Deutsch's max-entropy rule choose between, and why is a rule needed at all?"
+      ]
+    },
+    {
+      "id": "pctc",
+      "name": "Postselected CTCs (P-CTCs)",
+      "tier": 4,
+      "plain": "The other quantum model: run teleportation and keep ONLY the branches where the loop's output matches its input — mismatched branches are projected out and the survivors renormalized. Kevin's original 'paths that don't match get cancelled' is nearly this model's definition; the perfect grandfather's branch cancels to exactly zero.",
+      "example": "TM3 right panel: postselection weight cos²(θ/2) — smoothly suppressed as the paradox strengthens, exactly 0 at θ = π.",
+      "formal": "𝒩[ρ] = CρC†/Tr[CρC†] with C = Tr_CTC[U]; null amplitude ⇒ 'the related event does not happen (so that the Novikov principle is enforced)' (Lloyd et al. 2011).",
+      "prereqs": ["amplitudes-interference", "ctc-block"],
+      "where": ["Report I C6a + TM3 figure"],
+      "test": [
+        "What plays the role of 'cancellation' in a P-CTC, mechanically?",
+        "Why does postselection make the theory nonlinear, and name one weird consequence."
+      ]
+    },
+    {
+      "id": "p1-closure-cost",
+      "name": "Theorem 1 — the closure cost",
+      "tier": 4,
+      "plain": "YOUR theorem: the probability that a dissipative system threading a time loop closes consistently equals its return probability — which slides monotonically down to the Boltzmann weight of the loop state. Short hops are cheap; loops longer than the relaxation time pay e^(−ΔF/k_BT), the full price of keeping that state in existence.",
+      "example": "E1 figure: floors at e^−1, e^−3, e^−6 for loop states 1, 3, 6 k_B below equilibrium — drag the widget's sliders and watch the floor sink.",
+      "formal": "R_τ(x) = P(x(τ)=x|x(0)=x) ↓ π(x) = e^{−ΔF_x/k_BT}; macrostates: π(M) = e^{−(F_M−F_eq)/k_BT}, = e^{−ΔS/k_B} at equal energy.",
+      "prereqs": ["return-probability", "novikov-fixedpoint", "free-energy"],
+      "widget": "closure-cost",
+      "where": ["Report II §4 Theorem 1 + E1"],
+      "test": [
+        "Explain 'the universe charges Boltzmann rates for time travel' precisely — what quantity is being priced, in what measure?",
+        "Why does loop DURATION matter, and what timescale separates cheap from expensive?"
+      ]
+    },
+    {
+      "id": "p1-loop-secondlaw",
+      "name": "Theorem 2 — the second law inside the loop",
+      "tier": 4,
+      "plain": "YOUR theorem, part two: an undriven consistent loop produces EXACTLY zero net entropy — not approximately, identically (the jumps telescope). With driving, entropy production inside the consistent ensemble still obeys a fluctuation theorem: time loops are statistically ordinary, never free-lunch machines.",
+      "example": "E2: all 2,187 undriven periodic paths have s = 0.000…; the driven ring's 6,561 loops match P(s)/P(−s) = e^s to 3×10⁻¹⁴.",
+      "formal": "T2a: undriven ⇒ s(γ) ≡ 0 on periodic γ (telescoping). T2b: P(s|C)/P(−s|C) = e^{s/k_B}, ⟨e^{−s/k_B}⟩_C = 1, ⟨s⟩_C ≥ 0.",
+      "prereqs": ["entropy-production", "fluctuation-theorems", "p1-closure-cost"],
+      "where": ["Report II §4 Theorem 2 + E2"],
+      "test": [
+        "Why is T2a an IDENTITY rather than a probabilistic statement, and what assumption is doing the work?",
+        "Where did the 'cost' go, if consistent loops dissipate nothing net? (Hint: T1.)"
+      ]
+    },
+    {
+      "id": "p1-records-price",
+      "name": "Result 5 — the price attaches to records",
+      "tier": 4,
+      "plain": "YOUR headline: demand only that the quantum STATE be consistent (Deutsch) and the loop is free; demand that a RECORD — a pointer state, a memory — survive the loop, and the full Boltzmann price reappears. A time machine for quantum information is cheap; a time machine for history is what nature taxes.",
+      "example": "E4: left, Deutsch iteration converges at every coupling (no gate); right, record-closure decays to the Boltzmann floor of the record's state.",
+      "formal": "Deutsch: ρ* = Φ(ρ*) exists ∀ couplings tested. Records: closure of a pointer value under dephased dynamics = classical return probability ⇒ Theorem 1's suppression.",
+      "prereqs": ["deutsch-consistency", "pointer-records", "p1-closure-cost"],
+      "where": ["Report II §4 R5 + E4; abstract"],
+      "test": [
+        "Explain to a friend why 'nothing can REMEMBER completing a time loop' is a thermodynamic statement.",
+        "What exactly changes, mathematically, between the free (Deutsch) and taxed (record) readings of the same loop?"
+      ]
+    },
+    {
+      "id": "chronology-protection",
+      "name": "Chronology protection (context)",
+      "tier": 4,
+      "plain": "The still-open question Report II deliberately does NOT touch: whether time machines can FORM at all. Hawking conjectured vacuum energy piling up on the about-to-close loop destroys the machine at birth; 30+ years on, it's unresolved and provably needs quantum gravity. Your P1 prices the ride; this is about the road.",
+      "example": "TM4's dial: per-circuit gain g of circulating waves — bounded pile-up at g<1 (Kim–Thorne's hope), geometric blow-up at g>1 (Hawking's bet).",
+      "formal": "Hawking 1992: back-reaction of divergent ⟨T_μν⟩ at the chronology horizon prevents CTC formation ('the universe safe for historians'); Kay–Radzikowski–Wald 1997: semiclassical theory itself breaks down there.",
+      "prereqs": ["ctc-block"],
+      "where": ["Report I C4b + TM4"],
+      "test": [
+        "Why is chronology protection a question about the ROAD while P1 is about the RIDE?",
+        "What did Kay–Radzikowski–Wald actually prove — that machines are destroyed, or something subtler?"
+      ]
+    }
+  ]
+}
