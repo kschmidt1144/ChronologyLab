@@ -1,5 +1,7 @@
 # Chronology Lab
 
+**Report I live at [kykli.dev/chronologylab](https://kykli.dev/chronologylab/)** · public repo
+
 A claims-ledger research project: take one big conjecture about time travel to the past and
 thoroughly prove or disprove it — assumptions explicit, reasoning decomposed into individually
 testable pieces, verdicts earned per piece and then recomposed.
